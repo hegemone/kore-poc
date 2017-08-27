@@ -45,8 +45,6 @@ end
 #############################################################
 # Dep setup, build injectors
 #############################################################
-# Full blown project will use a proper config setup
-# Not relevant for demo purposes, so we'll use a map
 _config = load_config()
 master_deps = Dry::Container.new
 master_deps.register(:log, setup_logger())
