@@ -13,8 +13,7 @@ module Kore
 
       def listen
         self.log.debug "DiscordAdapter#listen"
-        #self.discord_client.message_handler = method(:message_handler)
-        #self.discord_client.listen
+        self.discord_client.message_handler = method(:message_handler)
       end
 
       private
@@ -24,6 +23,7 @@ module Kore
       end
 
       def message_handler(raw_msg)
+        self.log.debug("DiscordAdapter#message_handler")
         # NOTE: Some amount of platform specific message processing...
         s = raw_msg.split(':')
         identity = s[0]

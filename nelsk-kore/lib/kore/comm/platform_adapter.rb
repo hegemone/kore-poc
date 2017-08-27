@@ -9,7 +9,9 @@ module Kore
       end
 
       def message_received(identity, raw)
-        self.log.debug "msg: [#{raw}]"
+        self.log.debug "PlatformAdapter#message_received"
+        self.log.debug "  identity: #{identity}"
+        self.log.debug "  raw: #{raw}"
 
         if self.is_cmd(raw)
           self.log.debug "Command matched, parsing..."

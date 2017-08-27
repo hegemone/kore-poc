@@ -14,7 +14,6 @@ module Kore
       def listen
         self.log.debug "IRCAdapter#listen"
         self.irc_client.message_handler = method(:message_handler)
-        self.irc_client.listen
       end
 
       private
@@ -24,6 +23,7 @@ module Kore
       end
 
       def message_handler(raw_msg)
+        self.log.debug("IRCAdapter#message_handler")
         # NOTE: Some amount of platform specific message processing...
         s = raw_msg.split(':')
         identity = s[0]

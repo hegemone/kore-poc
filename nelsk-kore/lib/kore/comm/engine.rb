@@ -21,7 +21,7 @@ module Kore
         }
       end
       def route_ingress(m)
-        self.log.info("Routing ingress message:")
+        self.log.info("Engine#route_ingress")
         self.log.info(m)
       end
     end
