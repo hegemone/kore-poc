@@ -1,0 +1,19 @@
+# frozen_string_literal: true
+source "https://rubygems.org"
+
+git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
+
+# Added at 2017-08-25 10:18:16 -0400 by nelsk:
+gem "eventmachine", "~> 1.2"
+
+# Added at 2017-08-26 13:32:50 -0400 by nelsk:
+gem "logging", "~> 2.2"
+
+# Added at 2017-08-26 13:49:08 -0400 by nelsk:
+gem "dry-auto_inject", "~> 0.4.3"
+
+# Added at 2017-08-26 13:51:20 -0400 by nelsk:
+gem "dry-container", "~> 0.6.0"
+
+# Added at 2017-08-26 14:17:30 -0400 by nelsk:
+gem "pry", "~> 0.10.4"
