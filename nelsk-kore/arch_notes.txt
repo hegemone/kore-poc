@@ -24,3 +24,7 @@ Kore::Extension::BaconPlugin
 Kore::Extension::DigitalOceanPlugin
 Kore::Extension::DiscordAdapter
 Kore::Extension::IRCAdapter
+
+# TODO
+* plugin routing
+* egress
