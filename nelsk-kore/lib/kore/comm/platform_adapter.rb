@@ -8,14 +8,17 @@ module Kore
         @engine = engine
       end
 
-      def message_received(originator, raw)
+      def message_received(identity, raw)
         self.log.debug "msg: [#{raw}]"
 
         if self.is_cmd(raw)
           self.log.debug "Command matched, parsing..."
           begin
             m = self.parse(raw)
-            m.originator = originator
+            m.originator = {
+              identity: identity,
+              platform: self.name
+            }
           rescue Exception => e
             self.log.warn "Error occurred while parsing message"
             self.log.warn raw

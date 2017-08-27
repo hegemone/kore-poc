@@ -4,7 +4,7 @@ module Kore
       include InjectPlatformClient[:irc_client]
 
       def name
-        'irc'
+        :irc
       end
 
       def send_message(emsg)
@@ -26,9 +26,9 @@ module Kore
       def message_handler(raw_msg)
         # NOTE: Some amount of platform specific message processing...
         s = raw_msg.split(':')
-        originator = s[0]
+        identity = s[0]
         msg = s[1].strip
-        self.message_received(originator, msg)
+        self.message_received(identity, msg)
       end
     end
   end
