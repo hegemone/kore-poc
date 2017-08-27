@@ -10,9 +10,9 @@ MAX_SLEEP = 3
 
 def main
   puts '============================================================'
-  puts '                      KoreCommEngine demo'
+  puts '                       EM Reactor Demo'
   puts '============================================================'
-  KCEngine.new().start
+  Engine.new().start
 end
 
 class DerpJob
@@ -23,7 +23,6 @@ class DerpJob
     @tick = tick
     @done = done
     @name = "foo_#{@id}"
-    @chan = EM::Channel.new
     @total_ticks = Random.rand((1..MAX_TICK+1))
     @sleep = Random.rand((1..MAX_SLEEP+1))
   end
@@ -42,8 +41,9 @@ class DerpJob
   end
 
   def send_tick(tick_num)
-    progress = tick_num.to_f / @total_ticks * 100
-    p_str = if tick_num == 0 then "0.0%" else sprintf("%.1f%%", progress) end
+    p_str = if tick_num == 0 then "0.0%" else
+              sprintf("%.1f%%", tick_num.to_f / @total_ticks * 100)
+            end
     @tick.call(self.msg("progress: #{p_str}"))
   end
 
@@ -52,9 +52,9 @@ class DerpJob
   end
 end
 
-class KCEngine
+class Engine
   def start
-    puts 'engine#start'
+    puts 'Engine#start'
 
     EM.run do
       puts "Spawning #{MAX_JOBS} job..."
@@ -70,11 +70,11 @@ class KCEngine
   end
 
   def on_tick(msg)
-    print "KCEngine#on_tick: job[#{msg[:job].name}], val:[#{msg[:val]}]\n"
+    print "Engine#on_tick: job[#{msg[:job].name}], val:[#{msg[:val]}]\n"
   end
 
   def on_done(msg)
-    print "KCEngine#on_done: job[#{msg[:job].name}], val:[#{msg[:val]}]\n"
+    print "Engine#on_done: job[#{msg[:job].name}], val:[#{msg[:val]}]\n"
   end
 end
 
