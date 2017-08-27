@@ -1,0 +1,68 @@
+#!/usr/bin/env ruby
+$LOAD_PATH.unshift(
+  File.join(File.absolute_path(File.dirname(__FILE__)), 'lib')
+)
+
+require 'logging'
+require 'eventmachine'
+require 'dry-auto_inject'
+require 'dry-container'
+require 'pry'
+
+def setup_logger
+  Logging.color_scheme(
+    'bright', :levels => {
+      :info  => :green,
+      :warn  => :yellow,
+      :error => :red,
+      :fatal => [:white, :on_red]
+    },
+    :date => :blue,
+  )
+
+  Logging.appenders.stdout(
+    'stdout',
+    :layout => Logging.layouts.pattern(
+      :pattern => '[%d] %-5l %m\n',
+      :color_scheme => 'bright'
+    )
+  )
+
+  log = Logging.logger['Kore']
+  log.add_appenders 'stdout'
+  log
+end
+
+def load_config
+  {
+    engine: {
+      foo: 'bar'
+    },
+    em_threadpool_size: 20 # 20 is default, just showing it's configurable
+  }
+end
+
+#############################################################
+# Dep setup, build injectors
+#############################################################
+# Full blown project will use a proper config setup
+# Not relevant for demo purposes, so we'll use a map
+_config = load_config()
+master_deps = Dry::Container.new
+master_deps.register(:log, setup_logger())
+master_deps.register(:config, _config)
+InjectMasterDeps = Dry::AutoInject(master_deps)
+
+require 'kore/mock'
+platform_clients = Dry::Container.new
+platform_clients.register(:irc_client, Kore::Mock::PlatformClient.new("irc"))
+platform_clients.register(:discord_client, Kore::Mock::PlatformClient.new("discord"))
+InjectPlatformClient = Dry::AutoInject(platform_clients)
+
+EM.threadpool_size = _config[:em_threadpool_size]
+
+#############################################################
+# Fire up Kore
+#############################################################
+require 'kore'
+Kore::Comm::Engine.new().start
