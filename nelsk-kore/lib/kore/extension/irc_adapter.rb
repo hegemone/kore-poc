@@ -16,10 +16,8 @@ module Kore
         self.irc_client.message_handler = method(:message_handler)
       end
 
-      private
-
       def serialize(emsg)
-        "#{emsg.originator} - #{emsg.msg}"
+        "#{emsg.content}"
       end
 
       def message_handler(raw_msg)

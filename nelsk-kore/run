@@ -71,4 +71,17 @@ EM.threadpool_size = _config[:em_threadpool_size]
 # Fire up Kore
 #############################################################
 require 'kore'
-Kore::Comm::Engine.new().start
+
+# These lists are also obviously configured, more hardcoding for demo purposes
+installed_plugins = [
+  'Kore::Extension::BaconPlugin'
+]
+
+installed_adapters = [
+  'Kore::Extension::DiscordAdapter',
+  'Kore::Extension::IRCAdapter',
+]
+
+Kore::Comm::Engine.new(
+  installed_plugins, installed_adapters
+).start

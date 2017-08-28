@@ -1,18 +1,12 @@
 module Kore
   module Comm
     class Engine < Kore::Machinery::Base
-      def initialize
-        super # IMPORTANT: Must call super to get deps
+      def initialize(plugins, adapters)
+        super() # IMPORTANT: Must call super to get deps
         @config = self.config[:engine]
         self.log.debug 'Engine#initialize'
-        self.log.debug "Demo config injection in engine: foo -> #{@config[:foo]}"
-
-        # TODO: Iterate some kind of config and dynamically load up the adapters
-        # hardcoding for now...
-        @adapters = {
-          discord: Kore::Extension::DiscordAdapter.new(self),
-          irc: Kore::Extension::IRCAdapter.new(self),
-        }
+        @plugins = self.load_extensions(plugins)
+        @adapters = self.load_extensions(adapters)
       end
       def start
         self.log.debug 'Engine#start'
@@ -22,7 +16,27 @@ module Kore
       end
       def route_ingress(m)
         self.log.info("Engine#route_ingress")
-        self.log.info(m)
+        begin
+          @plugins[m.plugin.to_sym].handle_ingress(m)
+        rescue Exception => e
+          self.log.error 'Something went wrong trying to handle ingress:'
+          self.log.error "  message: #{m}"
+          self.log.error "  exception: #{e.message}"
+        end
+      end
+      def handle_egress(originator, raw_emsg)
+        @adapters[originator[:platform]].send_message Kore::Comm::EgressMessage.new({
+          originator: originator,
+          content: raw_emsg
+        })
+      end
+      def load_extensions(extensions)
+        extensions.reduce({}) do |container, extension|
+          extension = Object::const_get(extension).new
+          extension.engine = self
+          container[extension.name] = extension
+          container
+        end
       end
     end
   end

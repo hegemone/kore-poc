@@ -4,4 +4,3 @@ require 'kore/extension/irc_adapter'
 
 # Plugins
 require 'kore/extension/bacon_plugin'
-require 'kore/extension/digitalocean_plugin'

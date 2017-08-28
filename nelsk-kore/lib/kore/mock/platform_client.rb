@@ -5,6 +5,7 @@ module Kore
 
       def initialize(name)
         @name = name
+        @botname = "KoreBot"
         @user = "#{name}_duder"
       end
 
@@ -13,7 +14,7 @@ module Kore
       end
 
       def send(msg)
-        puts "PlatformClient[#{@name}] -> #{msg}"
+        puts "PlatformClient[#{@name}] #{@botname}: #{msg}"
       end
     end
   end

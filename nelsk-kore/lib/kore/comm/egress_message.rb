@@ -1,10 +1,14 @@
 module Kore
   module Comm
     class EgressMessage
-      attr_reader :originator, :msg
-      def initialize(originator, msg)
-        @originator = originator
-        @msg = msg
+      attr_reader :originator, :content
+      def initialize(o)
+        @originator = o.fetch(:originator, '')
+        @content= o.fetch(:content, '')
+      end
+
+      def to_s
+        "[#{@originator}] [#{@content}]"
       end
     end
   end

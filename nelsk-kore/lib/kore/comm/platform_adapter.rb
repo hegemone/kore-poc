@@ -1,12 +1,8 @@
 module Kore
   module Comm
     class PlatformAdapter < Kore::Machinery::Base
+      attr_accessor :engine
       TRIGGER_PREFIX = '!'
-
-      def initialize(engine)
-        super()
-        @engine = engine
-      end
 
       def message_received(identity, raw)
         self.log.debug "PlatformAdapter#message_received"
@@ -54,9 +50,7 @@ module Kore
 
       def parse(raw)
         # TODO: TEST ALL THE THINGS
-
         # Message structure:
-        # <TRIGGER_PREFIX><PLUGIN> <CMD?> <CONTENT?>
         # Example message types:
         # "!bacon" -- no cmd
         # "!satellite ping" -- no content
@@ -66,16 +60,13 @@ module Kore
         end
 
         snipped = raw[1..raw.length]
+        content = snipped.clone
         tmp = snipped.split(" ")
         plugin = tmp.shift
-        cmd = if tmp.length != 0 then tmp.shift else "" end
-        content = tmp.join(" ")
 
         Kore::Comm::IngressMessage.new({
           plugin: plugin,
-          cmd: cmd,
           content: content,
-          raw: raw
         })
       end
     end
