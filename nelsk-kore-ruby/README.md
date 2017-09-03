@@ -1,4 +1,4 @@
-# nelsk-kore
+# nelsk-kore-ruby
 
 POC demo illustrating a number of key pieces of `kore-comm`, the server responsible
 for IO between various platforms and the plugins that implement features.
