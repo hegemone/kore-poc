@@ -1,0 +1,87 @@
+#!/usr/bin/env ruby
+$LOAD_PATH.unshift(
+  File.join(File.absolute_path(File.dirname(__FILE__)), 'lib')
+)
+
+require 'logging'
+require 'eventmachine'
+require 'dry-auto_inject'
+require 'dry-container'
+require 'pry'
+
+def setup_logger
+  Logging.color_scheme(
+    'bright', :levels => {
+      :info  => :green,
+      :warn  => :yellow,
+      :error => :red,
+      :fatal => [:white, :on_red]
+    },
+    :date => :blue,
+  )
+
+  Logging.appenders.stdout(
+    'stdout',
+    :layout => Logging.layouts.pattern(
+      :pattern => '[%d] %-5l %m\n',
+      :color_scheme => 'bright'
+    )
+  )
+
+  log = Logging.logger['Kore']
+  log.add_appenders 'stdout'
+  log
+end
+
+def load_config
+  {
+    engine: {
+      foo: 'bar'
+    },
+    em_threadpool_size: 20 # 20 is default, just showing it's configurable
+  }
+end
+
+#############################################################
+# Dep setup, build injectors
+#############################################################
+_config = load_config()
+master_deps = Dry::Container.new
+master_deps.register(:log, setup_logger())
+master_deps.register(:config, _config)
+InjectMasterDeps = Dry::AutoInject(master_deps)
+
+require 'kore/mock'
+irc_client = Kore::Mock::PlatformClient.new("irc")
+discord_client = Kore::Mock::PlatformClient.new("discord")
+
+demux = Kore::Mock::InputDemux.new({
+  irc: proc { |m| irc_client.trigger(m) },
+  discord: proc { |m| discord_client.trigger(m) },
+}).listen
+
+platform_clients = Dry::Container.new
+platform_clients.register(:irc_client, irc_client)
+platform_clients.register(:discord_client, discord_client)
+InjectPlatformClient = Dry::AutoInject(platform_clients)
+
+EM.threadpool_size = _config[:em_threadpool_size]
+
+#############################################################
+# Fire up Kore
+#############################################################
+require 'kore'
+
+# These lists are also obviously configured, more hardcoding for demo purposes
+installed_plugins = [
+  'Kore::Extension::BaconPlugin'
+]
+
+installed_adapters = [
+  'Kore::Extension::DiscordAdapter',
+  'Kore::Extension::IRCAdapter',
+]
+
+Kore::Comm::Engine.new(
+  installed_plugins, installed_adapters
+).start
