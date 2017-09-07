@@ -1,0 +1,47 @@
+Agenda
+======
+* What is the desired base functionality
+* Framework goal: decoupling behavior from external services. Should be easily extensible on both sides
+* Feature parity with jbot today using the kore architecture would be an obvious 1.0, would prove out the design. Rikai has min reqs that kore would need to hit before retiring jbot
+* Important new additions are users, authentication, and authorization for actions requiring elevated permissions
+
+* Auth design -- how does the engine delegate auth to the adapters, and ultimately trust an "identity" - https://github.com/hegemone/kore-poc/issues/4
+-> Note: Not too concerned with comm -> data auth, lot of examples how to authenticate and whitelist systems
+
+ agree with the suggestion you made earlier, @nelsk. We should have the adapters offer a method like is_trusted(some_identity) which returns true for every adapter except IRC. On IRC, it should check NickServ for that
+engine delegates to the adapters
+* Initial thoughts:
+- Create working IRC adapter
+- Demo the ability to indicate to an engine whether or not a user is authenticated
+- Demo a smiliar mechanism and consider the specifics of discord
+- Demo conditional behavior based on whether or not that user is authenticated (echo back, but only if registered with the nickserv, for example)
+
+* kore-data -- clean rest server on top of DB. Swagger def would be nice, trying to avoid a ton of boilerplate
+*swagger pros: lang independent api definition, wide adoption. Easy to generate docs, *clients*, and server stubs
+cons: serverside is just the io layer -- still need a storage layer, ORMs, model definitions. the go sub was barren.
+* plugins are generic, but often they may have an associated storage backend. Enough to document a plugin expects
+a rest interface of a certain api version? my.kore.io/api/v2/show
+
+Issues:
+* go-restful is a great framework for building rest api's as well. VERY easy to use. https://github.com/emicklei/go-restful -- I use this daily
+* swagger POC, lang not as important as swagger learnings
+
+Postgres no question :)
+
+* Language discussion. Golang interest v. ruby.
+- We could also use python make it into a Django app, but of those two I don't think it matters to me.
+- Go lang is going to be more performant (code optimization aside)
+- Ruby tends to be go with DSLs so if we found a method for codifying the front end it could easily be used to quickly provide front ends for the various interfaces.
+
+Golang support all around, ruby has some good things going for it as well (cinch compat)
+
+* Logo?
+* Next steps?
+
+After data POCs, manipulating kore data via that API
+Nice to have: auth
+
+People to add to org:
+dahendel
+hdost
+cprojectpro
