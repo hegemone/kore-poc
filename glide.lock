@@ -1,0 +1,16 @@
+hash: c47f5337bb8f36db0d32d98a8f6b2a17d309ae6204b0fb70712e7e57e22f770d
+updated: 2017-09-11T21:44:17.700756097-05:00
+imports:
+- name: github.com/emicklei/go-restful
+  version: 68c9750c36bb8cb433f1b88c807b4b30df4acc40
+  subpackages:
+  - log
+- name: github.com/emicklei/go-restful-swagger12
+  version: dcef7f55730566d41eae5db10e7d6981829720f6
+- name: github.com/mattn/go-sqlite3
+  version: ca5e3819723d8eeaf170ad510e7da1d6d2e94a08
+- name: golang.org/x/net
+  version: 66aacef3dd8a676686c7ae3716979581e8b03c47
+  subpackages:
+  - context
+testImports: []
