@@ -25,6 +25,8 @@ vendor
 
 *.db
 .idea
+3rdparty/swagger-ui
+docs/swagger-ui/*
 # CMake
 cmake-build-debug/
 

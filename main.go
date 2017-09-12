@@ -23,6 +23,7 @@ func main() {
 
 	swagger.RegisterSwaggerService(config, container)
 
+	// The api is listening on port 8080
 	http.ListenAndServe("0.0.0.0:8080", container)
 
 }

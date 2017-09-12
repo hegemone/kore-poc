@@ -1,3 +1,0 @@
-[submodule "3rdparty/swagger-ui"]
-	path = 3rdparty/swagger-ui
-	url = https://github.com/swagger-api/swagger-ui
