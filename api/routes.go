@@ -20,7 +20,7 @@ func RegisterPaths() *restful.WebService {
 		Doc("Show me all the names. You must have a basic Auth account to see this endpoint").
 		Reads(client.Name{}).
 		Writes(client.Name{}).
-		Returns(200, "", YourName{}))
+		Returns(200, "", client.Name{}))
 
 	ws.Route(ws.GET("/whatsmyname").
 		To(getMyName).Filter(basicAuth).
@@ -47,7 +47,7 @@ func RegisterPaths() *restful.WebService {
 		Doc("Delete a name based on name id. You must have an admin account to use this endpoint").
 		Reads(client.Name{}).
 		Writes(client.Name{}).
-		Returns(200, "Update", client.Name{}))
+		Returns(200, "Update", DeleteCommand{}))
 
 	return ws
 }
