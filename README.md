@@ -10,34 +10,12 @@
     - When the app is launched localhost:8080/kore/docs provides the generated swagger docs.
     - The build takes a second because of the swagger doc. :(
 
-#### Install and Run
-go get the repo and install dependencies
-```
-go get -d github.com/dahendel/kore-poc
-cd $GOPATH/src/github.com/dahendel/kore-poc
-glide install
-```
+#### Run
+Build the image:
+`docker build -t kore-poc .`
 
-Install the swagger-ui into the 3rdparty folder. This is ignored in the .gitignore file
-```
-cd 3rdparty
-
-// This needs to be done so that the UI will rebder. There is a symlink in the docs folder that points 
-// to this folder. This directory is ignored in the .gitignore
-git clone https://github.com/swagger-api/swagger-ui.git
-
-cd ../docs/
-ln -s ../3rdparty/swagger-ui/dist swagger-ui
-cd ../
-```
-
-Build and Run the application
-```
-go build
-
-./kore-poc
-```
-
+Run the image:
+`docker run -d --name kore -p 8080:8080 kore-poc`
 
 #### Hitting the api
 
