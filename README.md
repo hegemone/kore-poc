@@ -18,7 +18,7 @@ cd $GOPATH/src/github.com/dahendel/kore-poc
 glide install
 ```
 
-Install the swagger-ui into the 3rdparty folder. This is ignored in the .ignore file
+Install the swagger-ui into the 3rdparty folder. This is ignored in the .gitignore file
 ```
 cd 3rdparty
 
@@ -26,7 +26,9 @@ cd 3rdparty
 // to this folder. This directory is ignored in the .gitignore
 git clone https://github.com/swagger-api/swagger-ui.git
 
-cd ..
+cd ../docs/
+ln -s ../3rdparty/swagger-ui/dist swagger-ui
+cd ../
 ```
 
 Build and Run the application
@@ -54,5 +56,3 @@ Auth:
   - Normal account: regs/password
 
 Docs-URL: http://localhost:8080/kore/docs
-
-
