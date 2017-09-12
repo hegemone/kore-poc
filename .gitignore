@@ -24,7 +24,7 @@ vendor
 .idea/**/libraries
 
 *.db
-
+.idea
 # CMake
 cmake-build-debug/
 
