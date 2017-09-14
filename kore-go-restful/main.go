@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/emicklei/go-restful"
 	"github.com/emicklei/go-restful-swagger12"
-	"github.com/dahendel/kore-poc/api"
+	"github.com/dahendel/kore-poc/kore-go-restful/api"
 	"net/http"
 )
 

@@ -3,7 +3,7 @@ package api
 import (
 	"fmt"
 	"github.com/emicklei/go-restful"
-	"github.com/dahendel/kore-poc/client"
+	"github.com/dahendel/kore-poc/kore-go-restful/client"
 	"log"
 	"math/rand"
 	"time"

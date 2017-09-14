@@ -3,7 +3,7 @@ package api
 import (
 	"github.com/emicklei/go-restful"
 
-	"github.com/dahendel/kore-poc/client"
+	"github.com/dahendel/kore-poc/kore-go-restful/client"
 )
 
 

@@ -1,0 +1,30 @@
+# Projects
+
+* comm -- communications server
+  -> ServiceAdapter
+  -> Engine
+  -> Plugin
+  -> EngineJob
+
+* data -- persistent store and REST API, preferably OpenAPI based
+  to easily generate Kore::Data client and documentation
+
+* web -- web server + clients
+
+* extensions -- gem containing example kore plugins
+
+# Namespacing examples
+
+Kore::Machinery::Base
+Kore::Comm::ServicePlugin
+Kore::Data::User
+Kore::Web::Foo
+
+Kore::Extension::BaconPlugin
+Kore::Extension::DigitalOceanPlugin
+Kore::Extension::DiscordAdapter
+Kore::Extension::IRCAdapter
+
+# TODO
+* plugin routing
+* egress
