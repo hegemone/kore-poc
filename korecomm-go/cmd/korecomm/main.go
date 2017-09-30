@@ -16,8 +16,8 @@ func main() {
 	var err error
 
 	// TODO: Should be configurable
-	log.SetLevel(log.DebugLevel)
-	//log.SetLevel(log.InfoLevel)
+	//log.SetLevel(log.DebugLevel)
+	log.SetLevel(log.InfoLevel)
 
 	log.Info("============================================================")
 	log.Info("                 Kore::Comm Golang POC")
