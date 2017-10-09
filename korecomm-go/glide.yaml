@@ -1,0 +1,4 @@
+package: github.com/hegemone/kore-poc/korecomm-go
+import:
+- package: github.com/sirupsen/logrus
+  version: ^1.0.3
