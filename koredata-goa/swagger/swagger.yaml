@@ -1,0 +1,78 @@
+consumes:
+- application/json
+- application/xml
+- application/gob
+- application/x-gob
+definitions:
+  Json:
+    description: A quote from the user database (default view)
+    example:
+      quote: Voluptatem voluptate accusantium nulla amet fugit adipisci.
+      userID: Et et aliquid voluptatum omnis iure.
+    properties:
+      quote:
+        description: quote
+        example: Voluptatem voluptate accusantium nulla amet fugit adipisci.
+        type: string
+      userID:
+        description: unique user ID
+        example: Et et aliquid voluptatum omnis iure.
+        type: string
+    title: 'Mediatype identifier: application/json; view=default'
+    type: object
+info:
+  description: Allows users to interact with Jupiter Broadcasting's shows
+  title: The Kore of the Data
+  version: ""
+paths:
+  /quotes/:
+    get:
+      description: Returns all quotes in the quote database
+      operationId: quote#list
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Json'
+      schemes:
+      - http
+      summary: list quote
+      tags:
+      - quote
+  /quotes/{personID}:
+    get:
+      description: Returns all the quotes for a given person
+      operationId: quote#list by ID
+      parameters:
+      - description: Person ID
+        in: path
+        name: personID
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Json'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: list by ID quote
+      tags:
+      - quote
+produces:
+- application/json
+- application/xml
+- application/gob
+- application/x-gob
+responses:
+  NotFound:
+    description: Not Found
+  OK:
+    description: OK
+    schema:
+      $ref: '#/definitions/Json'
+schemes:
+- http
+swagger: "2.0"
