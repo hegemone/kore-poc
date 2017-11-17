@@ -9,3 +9,31 @@
 // --version=v1.3.0
 
 package app
+
+// All quotes for a given user ID
+type quote struct {
+	// The actual quotes of the quoter
+	Quote []string `form:"quote,omitempty" json:"quote,omitempty" xml:"quote,omitempty"`
+	// User ID of quoter
+	UserID *string `form:"userID,omitempty" json:"userID,omitempty" xml:"userID,omitempty"`
+}
+
+// Publicize creates Quote from quote
+func (ut *quote) Publicize() *Quote {
+	var pub Quote
+	if ut.Quote != nil {
+		pub.Quote = ut.Quote
+	}
+	if ut.UserID != nil {
+		pub.UserID = ut.UserID
+	}
+	return &pub
+}
+
+// All quotes for a given user ID
+type Quote struct {
+	// The actual quotes of the quoter
+	Quote []string `form:"quote,omitempty" json:"quote,omitempty" xml:"quote,omitempty"`
+	// User ID of quoter
+	UserID *string `form:"userID,omitempty" json:"userID,omitempty" xml:"userID,omitempty"`
+}

@@ -46,7 +46,7 @@ type ListByIDQuoteContext struct {
 	context.Context
 	*goa.ResponseData
 	*goa.RequestData
-	PersonID string
+	UserID string
 }
 
 // NewListByIDQuoteContext parses the incoming request URL and body, performs validations and creates the
@@ -58,10 +58,10 @@ func NewListByIDQuoteContext(ctx context.Context, r *http.Request, service *goa.
 	req := goa.ContextRequest(ctx)
 	req.Request = r
 	rctx := ListByIDQuoteContext{Context: ctx, ResponseData: resp, RequestData: req}
-	paramPersonID := req.Params["personID"]
-	if len(paramPersonID) > 0 {
-		rawPersonID := paramPersonID[0]
-		rctx.PersonID = rawPersonID
+	paramUserID := req.Params["userId"]
+	if len(paramUserID) > 0 {
+		rawUserID := paramUserID[0]
+		rctx.UserID = rawUserID
 	}
 	return &rctx, err
 }

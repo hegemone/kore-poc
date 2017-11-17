@@ -7,25 +7,49 @@ definitions:
   Json:
     description: A quote from the user database (default view)
     example:
-      quote: Voluptatem voluptate accusantium nulla amet fugit adipisci.
-      userID: Et et aliquid voluptatum omnis iure.
+      quotes:
+      - quote:
+        - Accusantium nulla amet fugit adipisci non et.
+        userID: Aliquid voluptatum.
+    properties:
+      quotes:
+        description: quote
+        example:
+        - quote:
+          - Accusantium nulla amet fugit adipisci non et.
+          userID: Aliquid voluptatum.
+        items:
+          $ref: '#/definitions/quote'
+        type: array
+    title: 'Mediatype identifier: application/json; view=default'
+    type: object
+  quote:
+    description: All quotes for a given user ID
+    example:
+      quote:
+      - Accusantium nulla amet fugit adipisci non et.
+      userID: Aliquid voluptatum.
     properties:
       quote:
-        description: quote
-        example: Voluptatem voluptate accusantium nulla amet fugit adipisci.
-        type: string
+        description: The actual quotes of the quoter
+        example:
+        - Accusantium nulla amet fugit adipisci non et.
+        items:
+          example: Accusantium nulla amet fugit adipisci non et.
+          type: string
+        type: array
       userID:
-        description: unique user ID
-        example: Et et aliquid voluptatum omnis iure.
+        description: User ID of quoter
+        example: Aliquid voluptatum.
         type: string
-    title: 'Mediatype identifier: application/json; view=default'
+    title: quote
     type: object
 info:
   description: Allows users to interact with Jupiter Broadcasting's shows
   title: The Kore of the Data
   version: ""
 paths:
-  /quotes/:
+  /quotes:
     get:
       description: Returns all quotes in the quote database
       operationId: quote#list
@@ -39,14 +63,14 @@ paths:
       summary: list quote
       tags:
       - quote
-  /quotes/{personID}:
+  /quotes/{userId}:
     get:
       description: Returns all the quotes for a given person
       operationId: quote#list by ID
       parameters:
-      - description: Person ID
+      - description: User ID
         in: path
-        name: personID
+        name: userId
         required: true
         type: string
       responses:

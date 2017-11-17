@@ -35,8 +35,8 @@ type (
 
 	// ListByIDQuoteCommand is the command line data structure for the list by ID action of quote
 	ListByIDQuoteCommand struct {
-		// Person ID
-		PersonID    string
+		// User ID
+		UserID      string
 		PrettyPrint bool
 	}
 )
@@ -50,7 +50,7 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	}
 	tmp1 := new(ListQuoteCommand)
 	sub = &cobra.Command{
-		Use:   `quote ["/quotes/"]`,
+		Use:   `quote ["/quotes"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp1.Run(c, args) },
 	}
@@ -64,7 +64,7 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	}
 	tmp2 := new(ListByIDQuoteCommand)
 	sub = &cobra.Command{
-		Use:   `quote ["/quotes/PERSONID"]`,
+		Use:   `quote ["/quotes/USERID"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp2.Run(c, args) },
 	}
@@ -233,7 +233,7 @@ func (cmd *ListQuoteCommand) Run(c *client.Client, args []string) error {
 	if len(args) > 0 {
 		path = args[0]
 	} else {
-		path = "/quotes/"
+		path = "/quotes"
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
@@ -257,7 +257,7 @@ func (cmd *ListByIDQuoteCommand) Run(c *client.Client, args []string) error {
 	if len(args) > 0 {
 		path = args[0]
 	} else {
-		path = fmt.Sprintf("/quotes/%v", url.QueryEscape(cmd.PersonID))
+		path = fmt.Sprintf("/quotes/%v", url.QueryEscape(cmd.UserID))
 	}
 	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
 	ctx := goa.WithLogger(context.Background(), logger)
@@ -273,6 +273,6 @@ func (cmd *ListByIDQuoteCommand) Run(c *client.Client, args []string) error {
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *ListByIDQuoteCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
-	var personID string
-	cc.Flags().StringVar(&cmd.PersonID, "personID", personID, `Person ID`)
+	var userID string
+	cc.Flags().StringVar(&cmd.UserID, "userId", userID, `User ID`)
 }

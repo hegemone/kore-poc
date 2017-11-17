@@ -19,9 +19,7 @@ import (
 // Identifier: application/json; view=default
 type JSON struct {
 	// quote
-	Quote *string `form:"quote,omitempty" json:"quote,omitempty" xml:"quote,omitempty"`
-	// unique user ID
-	UserID *string `form:"userID,omitempty" json:"userID,omitempty" xml:"userID,omitempty"`
+	Quotes []*Quote `form:"quotes,omitempty" json:"quotes,omitempty" xml:"quotes,omitempty"`
 }
 
 // DecodeJSON decodes the JSON instance encoded in resp body.

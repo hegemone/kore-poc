@@ -20,7 +20,7 @@ import (
 // ListQuotePath computes a request path to the list action of quote.
 func ListQuotePath() string {
 
-	return fmt.Sprintf("/quotes/")
+	return fmt.Sprintf("/quotes")
 }
 
 // Returns all quotes in the quote database
@@ -47,8 +47,8 @@ func (c *Client) NewListQuoteRequest(ctx context.Context, path string) (*http.Re
 }
 
 // ListByIDQuotePath computes a request path to the list by ID action of quote.
-func ListByIDQuotePath(personID string) string {
-	param0 := personID
+func ListByIDQuotePath(userID string) string {
+	param0 := userID
 
 	return fmt.Sprintf("/quotes/%s", param0)
 }

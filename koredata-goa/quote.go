@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/goadesign/goa"
 	"github.com/thefirstofthe300/kore-poc/koredata-goa/app"
 )
@@ -17,35 +19,41 @@ func NewQuoteController(service *goa.Service) *QuoteController {
 
 // List runs the list action.
 func (c *QuoteController) List(ctx *app.ListQuoteContext) error {
-	// QuoteController_List: start_implement
 
-	UserID := "danny"
-	Quote := "Wassup peeps"
+	response := &app.JSON{}
 
-	quotes := app.JSON{
-		UserID: &UserID,
-		Quote:  &Quote,
+	quotes := make(map[string][]string)
+
+	quotes["Danny"] = append(quotes["Danny"], "Wassup peeps")
+	quotes["Danny"] = append(quotes["Danny"], "Hello world")
+	quotes["Jack"] = append(quotes["Jack"], "Hit the road")
+
+	for k, v := range quotes {
+		// Since the quote object requires a pointer, we need to copy the data to
+		// a new variable to avoid all user IDs in the response from being the same.
+		// Since this is a proof of concept, this problem shouldn't be a huge issue
+		// long term.
+		userID := k
+		quote := &app.Quote{UserID: &userID, Quote: v}
+		response.Quotes = append(response.Quotes, quote)
 	}
 
-	// QuoteController_List: end_implement
-	return ctx.OK(&quotes)
+	return ctx.OK(response)
 }
 
 // ListByID runs the list by ID action.
-//func (c *QuoteController) ListByID(ctx *app.ListByIDQuoteContext) error {
-// QuoteController_ListByID: start_implement
+func (c *QuoteController) ListByID(ctx *app.ListByIDQuoteContext) error {
+	response := &app.JSON{}
 
-//	quotes := map[string]string{
-//		"Danny": "Wassup peeps",
-//		"Jack":  "Hit the road",
-//	}
+	quotes := make(map[string][]string)
 
-//	quoteJson, err := json.Marshal(quotes)
+	quotes["Danny"] = append(quotes["Danny"], "Wassup peeps")
+	quotes["Danny"] = append(quotes["Danny"], "Hello world")
+	quotes["Jack"] = append(quotes["Jack"], "Hit the road")
 
-//	if err != nil {
-//		return fmt.Errorf("unable to marshal quotes to json: %s", err)
-//	}
+	fmt.Println(ctx.UserID, quotes[ctx.UserID])
 
-// QuoteController_ListByID: end_implement
-//	return quoteJson
-//}
+	response.Quotes = append(response.Quotes, &app.Quote{UserID: &ctx.UserID, Quote: quotes[ctx.UserID]})
+
+	return ctx.OK(response)
+}

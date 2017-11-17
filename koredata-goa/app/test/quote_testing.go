@@ -49,7 +49,7 @@ func ListQuoteOK(t goatest.TInterface, ctx context.Context, service *goa.Service
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/quotes/"),
+		Path: fmt.Sprintf("/quotes"),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
@@ -92,7 +92,7 @@ func ListQuoteOK(t goatest.TInterface, ctx context.Context, service *goa.Service
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ListByIDQuoteNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.QuoteController, personID string) http.ResponseWriter {
+func ListByIDQuoteNotFound(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.QuoteController, userID string) http.ResponseWriter {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -113,14 +113,14 @@ func ListByIDQuoteNotFound(t goatest.TInterface, ctx context.Context, service *g
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/quotes/%v", personID),
+		Path: fmt.Sprintf("/quotes/%v", userID),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["personID"] = []string{fmt.Sprintf("%v", personID)}
+	prms["userId"] = []string{fmt.Sprintf("%v", userID)}
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -149,7 +149,7 @@ func ListByIDQuoteNotFound(t goatest.TInterface, ctx context.Context, service *g
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ListByIDQuoteOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.QuoteController, personID string) (http.ResponseWriter, *app.JSON) {
+func ListByIDQuoteOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.QuoteController, userID string) (http.ResponseWriter, *app.JSON) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -170,14 +170,14 @@ func ListByIDQuoteOK(t goatest.TInterface, ctx context.Context, service *goa.Ser
 	// Setup request context
 	rw := httptest.NewRecorder()
 	u := &url.URL{
-		Path: fmt.Sprintf("/quotes/%v", personID),
+		Path: fmt.Sprintf("/quotes/%v", userID),
 	}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		panic("invalid test " + err.Error()) // bug
 	}
 	prms := url.Values{}
-	prms["personID"] = []string{fmt.Sprintf("%v", personID)}
+	prms["userId"] = []string{fmt.Sprintf("%v", userID)}
 	if ctx == nil {
 		ctx = context.Background()
 	}

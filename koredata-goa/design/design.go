@@ -13,33 +13,37 @@ var _ = API("koredata", func() {
 
 var _ = Resource("quote", func() {
 	BasePath("/quotes")
-	DefaultMedia(Quote)
+	DefaultMedia(quotes)
 
 	Action("list", func() {
 		Description("Returns all quotes in the quote database")
-		Routing(GET("/"))
+		Routing(GET(""))
 		Response(OK)
 	})
 
-	//	Action("list by ID", func() {
-	//		Description("Returns all the quotes for a given person")
-	//		Routing(GET("/:personID"))
-	//		Params(func() {
-	//			Param("personID", String, "Person ID")
-	//		})
-	//		Response(OK)
-	//		Response(NotFound)
-	//	})
+	Action("list by ID", func() {
+		Description("Returns all the quotes for a given person")
+		Routing(GET("/:userId"))
+		Params(func() {
+			Param("userId", String, "User ID")
+		})
+		Response(OK)
+		Response(NotFound)
+	})
 })
 
-var Quote = MediaType("application/json", func() {
+var quotes = MediaType("application/json", func() {
 	Description("A quote from the user database")
 	Attributes(func() {
-		Attribute("userID", String, "unique user ID")
-		Attribute("quote", String, "quote")
+		Attribute("quotes", ArrayOf(userQuotes), "quote")
 	})
 	View("default", func() {
-		Attribute("userID")
-		Attribute("quote")
+		Attribute("quotes")
 	})
+})
+
+var userQuotes = Type("quote", func() {
+	Description("All quotes for a given user ID")
+	Attribute("userID", String, "User ID of quoter")
+	Attribute("quote", ArrayOf(String), "The actual quotes of the quoter")
 })

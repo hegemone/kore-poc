@@ -35,7 +35,7 @@ func initService(service *goa.Service) {
 type QuoteController interface {
 	goa.Muxer
 	List(*ListQuoteContext) error
-	//	ListByID(*ListByIDQuoteContext) error
+	ListByID(*ListByIDQuoteContext) error
 }
 
 // MountQuoteController "mounts" a Quote resource controller on the given service.
@@ -55,21 +55,21 @@ func MountQuoteController(service *goa.Service, ctrl QuoteController) {
 		}
 		return ctrl.List(rctx)
 	}
-	service.Mux.Handle("GET", "/quotes/", ctrl.MuxHandler("list", h, nil))
-	service.LogInfo("mount", "ctrl", "Quote", "action", "List", "route", "GET /quotes/")
+	service.Mux.Handle("GET", "/quotes", ctrl.MuxHandler("list", h, nil))
+	service.LogInfo("mount", "ctrl", "Quote", "action", "List", "route", "GET /quotes")
 
-	//h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
-	// Check if there was an error loading the request
-	//	if err := goa.ContextError(ctx); err != nil {
-	//		return err
-	//	}
-	// Build the context
-	//	rctx, err := NewListByIDQuoteContext(ctx, req, service)
-	//	if err != nil {
-	//		return err
-	//	}
-	//	return ctrl.ListByID(rctx)
-	//}
-	//service.Mux.Handle("GET", "/quotes/:personID", ctrl.MuxHandler("list by ID", h, nil))
-	//service.LogInfo("mount", "ctrl", "Quote", "action", "ListByID", "route", "GET /quotes/:personID")
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewListByIDQuoteContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.ListByID(rctx)
+	}
+	service.Mux.Handle("GET", "/quotes/:userId", ctrl.MuxHandler("list by ID", h, nil))
+	service.LogInfo("mount", "ctrl", "Quote", "action", "ListByID", "route", "GET /quotes/:userId")
 }
