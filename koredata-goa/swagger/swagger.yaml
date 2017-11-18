@@ -8,16 +8,16 @@ definitions:
     description: A quote from the user database (default view)
     example:
       quotes:
-      - quote:
-        - Accusantium nulla amet fugit adipisci non et.
-        userID: Aliquid voluptatum.
+      - ID: 5.271261e+18
+        Name: Accusantium nulla amet fugit adipisci non et.
+        Quote: Aliquid voluptatum.
     properties:
       quotes:
         description: quote
         example:
-        - quote:
-          - Accusantium nulla amet fugit adipisci non et.
-          userID: Aliquid voluptatum.
+        - ID: 5.271261e+18
+          Name: Accusantium nulla amet fugit adipisci non et.
+          Quote: Aliquid voluptatum.
         items:
           $ref: '#/definitions/quote'
         type: array
@@ -26,20 +26,21 @@ definitions:
   quote:
     description: All quotes for a given user ID
     example:
-      quote:
-      - Accusantium nulla amet fugit adipisci non et.
-      userID: Aliquid voluptatum.
+      ID: 5.271261e+18
+      Name: Accusantium nulla amet fugit adipisci non et.
+      Quote: Aliquid voluptatum.
     properties:
-      quote:
-        description: The actual quotes of the quoter
-        example:
-        - Accusantium nulla amet fugit adipisci non et.
-        items:
-          example: Accusantium nulla amet fugit adipisci non et.
-          type: string
-        type: array
-      userID:
+      ID:
+        description: ID of the user
+        example: 5.271261e+18
+        format: int64
+        type: integer
+      Name:
         description: User ID of quoter
+        example: Accusantium nulla amet fugit adipisci non et.
+        type: string
+      Quote:
+        description: The actual quotes of the quoter
         example: Aliquid voluptatum.
         type: string
     title: quote

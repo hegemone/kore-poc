@@ -12,28 +12,35 @@ package app
 
 // All quotes for a given user ID
 type quote struct {
-	// The actual quotes of the quoter
-	Quote []string `form:"quote,omitempty" json:"quote,omitempty" xml:"quote,omitempty"`
+	// ID of the user
+	ID *int `form:"ID,omitempty" json:"ID,omitempty" xml:"ID,omitempty"`
 	// User ID of quoter
-	UserID *string `form:"userID,omitempty" json:"userID,omitempty" xml:"userID,omitempty"`
+	Name *string `form:"Name,omitempty" json:"Name,omitempty" xml:"Name,omitempty"`
+	// The actual quotes of the quoter
+	Quote *string `form:"Quote,omitempty" json:"Quote,omitempty" xml:"Quote,omitempty"`
 }
 
 // Publicize creates Quote from quote
 func (ut *quote) Publicize() *Quote {
 	var pub Quote
+	if ut.ID != nil {
+		pub.ID = ut.ID
+	}
+	if ut.Name != nil {
+		pub.Name = ut.Name
+	}
 	if ut.Quote != nil {
 		pub.Quote = ut.Quote
-	}
-	if ut.UserID != nil {
-		pub.UserID = ut.UserID
 	}
 	return &pub
 }
 
 // All quotes for a given user ID
 type Quote struct {
-	// The actual quotes of the quoter
-	Quote []string `form:"quote,omitempty" json:"quote,omitempty" xml:"quote,omitempty"`
+	// ID of the user
+	ID *int `form:"ID,omitempty" json:"ID,omitempty" xml:"ID,omitempty"`
 	// User ID of quoter
-	UserID *string `form:"userID,omitempty" json:"userID,omitempty" xml:"userID,omitempty"`
+	Name *string `form:"Name,omitempty" json:"Name,omitempty" xml:"Name,omitempty"`
+	// The actual quotes of the quoter
+	Quote *string `form:"Quote,omitempty" json:"Quote,omitempty" xml:"Quote,omitempty"`
 }

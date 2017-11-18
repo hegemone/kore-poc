@@ -3,8 +3,12 @@
 package main
 
 import (
+	"log"
+
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/middleware"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"github.com/thefirstofthe300/kore-poc/koredata-goa/app"
 )
 
@@ -18,8 +22,30 @@ func main() {
 	service.Use(middleware.ErrorHandler(service, true))
 	service.Use(middleware.Recover())
 
+	db, err := gorm.Open("sqlite3", ":memory:")
+
+	if err != nil {
+		log.Fatalf("unable to open database: %s", err)
+	}
+
+	defer db.Close()
+
+	schema := app.Quote{}
+
+	db.AutoMigrate(&schema)
+
+	name1 := "Danny"
+	name2 := "Jack"
+	quote1 := "Wassup"
+	quote2 := "Hit the road"
+
+	danny := app.Quote{Name: &name1, Quote: &quote1}
+	db.Create(&danny)
+	jack := app.Quote{Name: &name2, Quote: &quote2}
+	db.Create(&jack)
+
 	// Mount "quote" controller
-	c := NewQuoteController(service)
+	c := NewQuoteController(service, db)
 	app.MountQuoteController(service, c)
 
 	// Start service

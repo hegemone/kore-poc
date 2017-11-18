@@ -44,6 +44,7 @@ var quotes = MediaType("application/json", func() {
 
 var userQuotes = Type("quote", func() {
 	Description("All quotes for a given user ID")
-	Attribute("userID", String, "User ID of quoter")
-	Attribute("quote", ArrayOf(String), "The actual quotes of the quoter")
+	Attribute("ID", Integer, "ID of the user")
+	Attribute("Name", String, "User ID of quoter")
+	Attribute("Quote", String, "The actual quotes of the quoter")
 })
