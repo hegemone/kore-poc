@@ -41,6 +41,12 @@ func (ctx *ListQuoteContext) OK(r *JSON) error {
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
 
+// Unauthorized sends a HTTP response with status code 401.
+func (ctx *ListQuoteContext) Unauthorized() error {
+	ctx.ResponseData.WriteHeader(401)
+	return nil
+}
+
 // ListByIDQuoteContext provides the quote list by ID action context.
 type ListByIDQuoteContext struct {
 	context.Context
@@ -70,6 +76,12 @@ func NewListByIDQuoteContext(ctx context.Context, r *http.Request, service *goa.
 func (ctx *ListByIDQuoteContext) OK(r *JSON) error {
 	ctx.ResponseData.Header().Set("Content-Type", "application/json")
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// Unauthorized sends a HTTP response with status code 401.
+func (ctx *ListByIDQuoteContext) Unauthorized() error {
+	ctx.ResponseData.WriteHeader(401)
+	return nil
 }
 
 // NotFound sends a HTTP response with status code 404.

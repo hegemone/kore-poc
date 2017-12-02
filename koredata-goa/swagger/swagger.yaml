@@ -59,8 +59,12 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/Json'
+        "401":
+          description: Unauthorized
       schemes:
       - http
+      security:
+      - BasicAuth: []
       summary: list quote
       tags:
       - quote
@@ -79,10 +83,14 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/Json'
+        "401":
+          description: Unauthorized
         "404":
           description: Not Found
       schemes:
       - http
+      security:
+      - BasicAuth: []
       summary: list by ID quote
       tags:
       - quote
@@ -98,6 +106,12 @@ responses:
     description: OK
     schema:
       $ref: '#/definitions/Json'
+  Unauthorized:
+    description: Unauthorized
 schemes:
 - http
+securityDefinitions:
+  BasicAuth:
+    description: Use client ID and client secret to authenticate
+    type: basic
 swagger: "2.0"

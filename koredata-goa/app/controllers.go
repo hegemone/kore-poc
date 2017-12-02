@@ -55,8 +55,9 @@ func MountQuoteController(service *goa.Service, ctrl QuoteController) {
 		}
 		return ctrl.List(rctx)
 	}
+	h = handleSecurity("BasicAuth", h)
 	service.Mux.Handle("GET", "/quotes", ctrl.MuxHandler("list", h, nil))
-	service.LogInfo("mount", "ctrl", "Quote", "action", "List", "route", "GET /quotes")
+	service.LogInfo("mount", "ctrl", "Quote", "action", "List", "route", "GET /quotes", "security", "BasicAuth")
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -70,6 +71,7 @@ func MountQuoteController(service *goa.Service, ctrl QuoteController) {
 		}
 		return ctrl.ListByID(rctx)
 	}
+	h = handleSecurity("BasicAuth", h)
 	service.Mux.Handle("GET", "/quotes/:userId", ctrl.MuxHandler("list by ID", h, nil))
-	service.LogInfo("mount", "ctrl", "Quote", "action", "ListByID", "route", "GET /quotes/:userId")
+	service.LogInfo("mount", "ctrl", "Quote", "action", "ListByID", "route", "GET /quotes/:userId", "security", "BasicAuth")
 }

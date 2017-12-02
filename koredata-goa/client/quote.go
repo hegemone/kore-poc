@@ -43,6 +43,9 @@ func (c *Client) NewListQuoteRequest(ctx context.Context, path string) (*http.Re
 	if err != nil {
 		return nil, err
 	}
+	if c.BasicAuthSigner != nil {
+		c.BasicAuthSigner.Sign(req)
+	}
 	return req, nil
 }
 
@@ -72,6 +75,9 @@ func (c *Client) NewListByIDQuoteRequest(ctx context.Context, path string) (*htt
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		return nil, err
+	}
+	if c.BasicAuthSigner != nil {
+		c.BasicAuthSigner.Sign(req)
 	}
 	return req, nil
 }

@@ -22,6 +22,8 @@ func main() {
 	service.Use(middleware.ErrorHandler(service, true))
 	service.Use(middleware.Recover())
 
+	app.UseBasicAuthMiddleware(service, NewBasicAuthMiddleware())
+
 	db, err := gorm.Open("sqlite3", ":memory:")
 
 	if err != nil {

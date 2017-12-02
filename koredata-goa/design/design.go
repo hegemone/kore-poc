@@ -13,12 +13,14 @@ var _ = API("koredata", func() {
 
 var _ = Resource("quote", func() {
 	BasePath("/quotes")
+	Security(BasicAuth)
 	DefaultMedia(quotes)
 
 	Action("list", func() {
 		Description("Returns all quotes in the quote database")
 		Routing(GET(""))
 		Response(OK)
+		Response(Unauthorized)
 	})
 
 	Action("list by ID", func() {
@@ -28,8 +30,13 @@ var _ = Resource("quote", func() {
 			Param("userId", String, "User ID")
 		})
 		Response(OK)
+		Response(Unauthorized)
 		Response(NotFound)
 	})
+})
+
+var BasicAuth = BasicAuthSecurity("BasicAuth", func() {
+	Description("Use client ID and client secret to authenticate")
 })
 
 var quotes = MediaType("application/json", func() {
