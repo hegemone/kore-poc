@@ -69,6 +69,10 @@ var (
 	// ErrNotFound is the error returned to requests that don't match a registered handler.
 	ErrNotFound = NewErrorClass("not_found", 404)
 
+	// ErrMethodNotAllowed is the error returned to requests that match the path of a registered
+	// handler but not the HTTP method.
+	ErrMethodNotAllowed = NewErrorClass("method_not_allowed", 405)
+
 	// ErrInternal is the class of error used for uncaught errors.
 	ErrInternal = NewErrorClass("internal", 500)
 )
@@ -245,6 +249,17 @@ func NoAuthMiddleware(schemeName string) error {
 	return ErrNoAuthMiddleware(msg, "scheme", schemeName)
 }
 
+// MethodNotAllowedError is the error produced to requests that match the path of a registered
+// handler but not the HTTP method.
+func MethodNotAllowedError(method string, allowed []string) error {
+	var plural string
+	if len(allowed) > 1 {
+		plural = " one of"
+	}
+	msg := fmt.Sprintf("Method %s must be%s %s", method, plural, strings.Join(allowed, ", "))
+	return ErrMethodNotAllowed(msg, "method", method, "allowed", strings.Join(allowed, ", "))
+}
+
 // Error returns the error occurrence details.
 func (e *ErrorResponse) Error() string {
 	msg := fmt.Sprintf("[%s] %d %s: %s", e.ID, e.Status, e.Code, e.Detail)
@@ -264,7 +279,7 @@ func (e *ErrorResponse) Token() string { return e.ID }
 // ServiceError if not already one - producing an internal error in that case. The merge algorithm
 // is:
 //
-// * If any of e or other implements ServiceMergableError, it is handled by its Merge method.
+// * If any of e or other implements ServiceMergableError, it is handled by it's Merge method.
 //
 // * If any of e or other is an internal error then the result is an internal error
 //

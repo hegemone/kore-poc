@@ -34,8 +34,10 @@ func initService(service *goa.Service) {
 // QuoteController is the controller interface for the Quote actions.
 type QuoteController interface {
 	goa.Muxer
+	Create(*CreateQuoteContext) error
 	List(*ListQuoteContext) error
 	ListByID(*ListByIDQuoteContext) error
+	Login(*LoginQuoteContext) error
 }
 
 // MountQuoteController "mounts" a Quote resource controller on the given service.
@@ -49,15 +51,36 @@ func MountQuoteController(service *goa.Service, ctrl QuoteController) {
 			return err
 		}
 		// Build the context
+		rctx, err := NewCreateQuoteContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		// Build the payload
+		if rawPayload := goa.ContextRequest(ctx).Payload; rawPayload != nil {
+			rctx.Payload = rawPayload.(*CreateQuotePayload)
+		} else {
+			return goa.MissingPayloadError()
+		}
+		return ctrl.Create(rctx)
+	}
+	h = handleSecurity("jwt", h, "api:write")
+	service.Mux.Handle("POST", "/quotes", ctrl.MuxHandler("create", h, unmarshalCreateQuotePayload))
+	service.LogInfo("mount", "ctrl", "Quote", "action", "Create", "route", "POST /quotes", "security", "jwt")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
 		rctx, err := NewListQuoteContext(ctx, req, service)
 		if err != nil {
 			return err
 		}
 		return ctrl.List(rctx)
 	}
-	h = handleSecurity("BasicAuth", h)
 	service.Mux.Handle("GET", "/quotes", ctrl.MuxHandler("list", h, nil))
-	service.LogInfo("mount", "ctrl", "Quote", "action", "List", "route", "GET /quotes", "security", "BasicAuth")
+	service.LogInfo("mount", "ctrl", "Quote", "action", "List", "route", "GET /quotes")
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -71,7 +94,38 @@ func MountQuoteController(service *goa.Service, ctrl QuoteController) {
 		}
 		return ctrl.ListByID(rctx)
 	}
-	h = handleSecurity("BasicAuth", h)
+	h = handleSecurity("jwt", h, "api:read")
 	service.Mux.Handle("GET", "/quotes/:userId", ctrl.MuxHandler("list by ID", h, nil))
-	service.LogInfo("mount", "ctrl", "Quote", "action", "ListByID", "route", "GET /quotes/:userId", "security", "BasicAuth")
+	service.LogInfo("mount", "ctrl", "Quote", "action", "ListByID", "route", "GET /quotes/:userId", "security", "jwt")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewLoginQuoteContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.Login(rctx)
+	}
+	h = handleSecurity("BasicAuth", h)
+	service.Mux.Handle("POST", "/quotes/login", ctrl.MuxHandler("login", h, nil))
+	service.LogInfo("mount", "ctrl", "Quote", "action", "Login", "route", "POST /quotes/login", "security", "BasicAuth")
+}
+
+// unmarshalCreateQuotePayload unmarshals the request body into the context request data Payload field.
+func unmarshalCreateQuotePayload(ctx context.Context, service *goa.Service, req *http.Request) error {
+	payload := &createQuotePayload{}
+	if err := service.DecodeRequest(req, payload); err != nil {
+		return err
+	}
+	if err := payload.Validate(); err != nil {
+		// Initialize payload with private data structure so it can be logged
+		goa.ContextRequest(ctx).Payload = payload
+		return err
+	}
+	goa.ContextRequest(ctx).Payload = payload.Publicize()
+	return nil
 }

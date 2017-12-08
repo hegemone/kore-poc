@@ -22,6 +22,9 @@ func main() {
 	service.Use(middleware.ErrorHandler(service, true))
 	service.Use(middleware.Recover())
 
+	jwtMiddleware, _ := NewJWTMiddleware()
+	app.UseJWTMiddleware(service, jwtMiddleware)
+
 	app.UseBasicAuthMiddleware(service, NewBasicAuthMiddleware())
 
 	db, err := gorm.Open("sqlite3", ":memory:")
@@ -47,7 +50,12 @@ func main() {
 	db.Create(&jack)
 
 	// Mount "quote" controller
-	c := NewQuoteController(service, db)
+	c, err := NewQuoteController(service, db)
+
+	if err != nil {
+		service.LogError("Unable to create QuoteController: ", err)
+	}
+
 	app.MountQuoteController(service, c)
 
 	// Start service

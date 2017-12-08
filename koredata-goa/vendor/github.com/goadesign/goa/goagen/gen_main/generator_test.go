@@ -53,8 +53,27 @@ var _ = Describe("Generate", func() {
 			content, err := ioutil.ReadFile(filepath.Join(outDir, "main.go"))
 			Ω(err).ShouldNot(HaveOccurred())
 			Ω(len(strings.Split(string(content), "\n"))).Should(BeNumerically(">=", 16))
+			Ω(string(content)).Should(ContainSubstring(listenAndServeCode))
 			_, err = gexec.Build(testgenPackagePath)
 			Ω(err).ShouldNot(HaveOccurred())
+		})
+
+		Context("via HTTPS", func() {
+			BeforeEach(func() {
+				design.Design.Schemes = []string{"https"}
+			})
+
+			It("generates a dummy app", func() {
+				Ω(genErr).Should(BeNil())
+				Ω(files).Should(HaveLen(1))
+				content, err := ioutil.ReadFile(filepath.Join(outDir, "main.go"))
+				Ω(err).ShouldNot(HaveOccurred())
+				Ω(len(strings.Split(string(content), "\n"))).Should(BeNumerically(">=", 16))
+				Ω(string(content)).Should(ContainSubstring(listenAndServeTLSCode))
+				_, err = gexec.Build(testgenPackagePath)
+				Ω(err).ShouldNot(HaveOccurred())
+			})
+
 		})
 	})
 
@@ -90,7 +109,7 @@ var _ = Describe("Generate", func() {
 			content, err := ioutil.ReadFile(filepath.Join(outDir, "first.go"))
 			Ω(err).ShouldNot(HaveOccurred())
 			Ω(content).Should(MatchRegexp("FirstController_Alpha: start_implement"))
-			Ω(content).Should(MatchRegexp(`// FirstController_Alpha: start_implement\s*// Put your logic here\s*// FirstController_Alpha: end_implement`))
+			Ω(content).Should(MatchRegexp(`// FirstController_Alpha: start_implement\s*// Put your logic here\s*return nil\s*// FirstController_Alpha: end_implement`))
 		})
 
 		Context("regenerated with a new resource", func() {
@@ -162,7 +181,7 @@ var _ = Describe("Generate", func() {
 				Ω(string(content)).Should(MatchRegexp(`import \(\s*[^)]*\"fmt\"`))
 
 				// Check the body is in place
-				Ω(content).Should(MatchRegexp(`// FirstController_Alpha: start_implement\s*fmt.Println\("I did it first"\)\s*// FirstController_Alpha: end_implement`))
+				Ω(content).Should(MatchRegexp(`// FirstController_Alpha: start_implement\s*fmt.Println\("I did it first"\)\s*return nil\s*// FirstController_Alpha: end_implement`))
 			})
 		})
 
@@ -216,3 +235,15 @@ var _ = Describe("NewGenerator", func() {
 
 	})
 })
+
+const listenAndServeCode = `
+	if err := service.ListenAndServe(":8080"); err != nil {
+		service.LogError("startup", "err", err)
+	}
+`
+
+const listenAndServeTLSCode = `
+	if err := service.ListenAndServeTLS(":8080", "cert.pem", "key.pem"); err != nil {
+		service.LogError("startup", "err", err)
+	}
+`

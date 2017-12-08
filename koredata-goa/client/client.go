@@ -18,6 +18,7 @@ import (
 // Client is the koredata service client.
 type Client struct {
 	*goaclient.Client
+	JWTSigner       goaclient.Signer
 	BasicAuthSigner goaclient.Signer
 	Encoder         *goa.HTTPEncoder
 	Decoder         *goa.HTTPDecoder
@@ -44,6 +45,11 @@ func New(c goaclient.Doer) *Client {
 	client.Decoder.Register(goa.NewJSONDecoder, "*/*")
 
 	return client
+}
+
+// SetJWTSigner sets the request signer for the jwt security scheme.
+func (c *Client) SetJWTSigner(signer goaclient.Signer) {
+	c.JWTSigner = signer
 }
 
 // SetBasicAuthSigner sets the request signer for the BasicAuth security scheme.

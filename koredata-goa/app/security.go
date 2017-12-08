@@ -21,6 +21,25 @@ type (
 	authMiddlewareKey string
 )
 
+// UseJWTMiddleware mounts the jwt auth middleware onto the service.
+func UseJWTMiddleware(service *goa.Service, middleware goa.Middleware) {
+	service.Context = context.WithValue(service.Context, authMiddlewareKey("jwt"), middleware)
+}
+
+// NewJWTSecurity creates a jwt security definition.
+func NewJWTSecurity() *goa.JWTSecurity {
+	def := goa.JWTSecurity{
+		In:       goa.LocHeader,
+		Name:     "Authorization",
+		TokenURL: "",
+		Scopes: map[string]string{
+			"api:read":  "API read access",
+			"api:write": "API write access",
+		},
+	}
+	return &def
+}
+
 // UseBasicAuthMiddleware mounts the BasicAuth auth middleware onto the service.
 func UseBasicAuthMiddleware(service *goa.Service, middleware goa.Middleware) {
 	service.Context = context.WithValue(service.Context, authMiddlewareKey("BasicAuth"), middleware)

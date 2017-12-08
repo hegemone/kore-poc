@@ -608,10 +608,7 @@ func (g *Generator) generateMediaTypes(pkgDir string, funcs template.FuncMap) (e
 			if err != nil {
 				return err
 			}
-			if err := typeDecodeTmpl.Execute(mtWr.SourceFile, p); err != nil {
-				return err
-			}
-			return nil
+			return typeDecodeTmpl.Execute(mtWr.SourceFile, p)
 		})
 		return err
 	})
@@ -988,7 +985,8 @@ func (c *Client) {{ $funcName }}(ctx context.Context, path string{{ if .Params }
 
 // NON STRING
 */}}{{ else if .MustToString }}{{ $tmp := tempvar }}	{{ toString .ValueName $tmp .Attribute }}
-	values.Set("{{ .Name }}", {{ $tmp }}){{/*
+	values.Set("{{ .Name }}", {{ $tmp }})
+{{/*
 
 // STRING
 */}}{{ else }}	values.Set("{{ .Name }}", {{ .ValueName }})
@@ -1098,7 +1096,9 @@ func (c *Client) {{ $funcName }}(ctx context.Context, path string{{ if .Params }
 	header.Set("{{ .Name }}", {{ .ValueName }})
 {{ end }}{{ if .CheckNil }}	}{{ end }}
 {{ end }}{{ end }}{{ if .Signer }}	if c.{{ .Signer }}Signer != nil {
-		c.{{ .Signer }}Signer.Sign(req)
+		if err := c.{{ .Signer }}Signer.Sign(req); err != nil {
+			return nil, err
+		}
 	}
 {{ end }}	return req, nil
 }

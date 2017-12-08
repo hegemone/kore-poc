@@ -14,6 +14,6 @@ package app
 //
 // Identifier: application/json; view=default
 type JSON struct {
-	// quote
-	Quotes []*Quote `form:"quotes,omitempty" json:"quotes,omitempty" xml:"quotes,omitempty"`
+	// Quote
+	Quotes []*Quote `form:"Quotes,omitempty" json:"Quotes,omitempty" xml:"Quotes,omitempty"`
 }

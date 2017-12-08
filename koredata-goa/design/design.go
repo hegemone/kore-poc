@@ -11,14 +11,48 @@ var _ = API("koredata", func() {
 	Scheme("http")
 })
 
+var JWT = JWTSecurity("jwt", func() {
+	Header("Authorization")
+	Scope("api:write", "API write access")
+	Scope("api:read", "API read access")
+})
+
 var _ = Resource("quote", func() {
 	BasePath("/quotes")
-	Security(BasicAuth)
+	Security(JWT, func() {
+		Scope("api:read")
+	})
 	DefaultMedia(quotes)
+
+	Action("login", func() {
+		Description("Login to the api")
+		Routing(POST("/login"))
+		Security(BasicAuth)
+		Response(NoContent, func() {
+			Headers(func() {
+				Header("Authorization", String, "Generated JWT")
+			})
+		})
+		Response(Unauthorized)
+	})
 
 	Action("list", func() {
 		Description("Returns all quotes in the quote database")
 		Routing(GET(""))
+		NoSecurity()
+		Response(OK)
+		Response(Unauthorized)
+	})
+
+	Action("create", func() {
+		Description("Create a quote and add it to the database")
+		Security(JWT, func() {
+			Scope("api:write")
+		})
+		Routing(POST(""))
+		Payload(QuotePayload, func() {
+			Required("Name", "Quote")
+		})
 		Response(OK)
 		Response(Unauthorized)
 	})
@@ -42,14 +76,25 @@ var BasicAuth = BasicAuthSecurity("BasicAuth", func() {
 var quotes = MediaType("application/json", func() {
 	Description("A quote from the user database")
 	Attributes(func() {
-		Attribute("quotes", ArrayOf(userQuotes), "quote")
+		Attribute("Quotes", ArrayOf(userQuotes), "Quote")
 	})
 	View("default", func() {
-		Attribute("quotes")
+		Attribute("Quotes")
 	})
 })
 
-var userQuotes = Type("quote", func() {
+var QuotePayload = Type("QuotePayload", func() {
+	Attribute("Name", func() {
+		MinLength(2)
+		Example("Number 8")
+	})
+	Attribute("Quote", func() {
+		MinLength(2)
+		Example("Asti")
+	})
+})
+
+var userQuotes = Type("Quote", func() {
 	Description("All quotes for a given user ID")
 	Attribute("ID", Integer, "ID of the user")
 	Attribute("Name", String, "User ID of quoter")

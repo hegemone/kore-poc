@@ -344,7 +344,8 @@ var _ = Describe("Generate", func() {
 			Ω(err).ShouldNot(HaveOccurred())
 			content := string(c)
 			Ω(content).Should(ContainSubstring("func ShowFooPath("))
-			Ω(content).Should(ContainSubstring(`values.Set("fields[foo]", *fieldsFoo)`))
+			Ω(content).Should(ContainSubstring(`values.Set("fields[foo]", *fieldsFoo)
+`))
 			Ω(content).Should(ContainSubstring(`	if fieldsBar != nil {
 		for _, p := range fieldsBar {
 			tmp3 := p
@@ -360,7 +361,8 @@ var _ = Describe("Generate", func() {
 	}
 `))
 			Ω(content).Should(ContainSubstring(`	tmp4 := fieldsBat.Format(time.RFC3339)
-		values.Set("fields[bat]", tmp4)`))
+		values.Set("fields[bat]", tmp4)
+`))
 		})
 
 		Context("with --notool", func() {
@@ -504,7 +506,9 @@ var _ = Describe("Generate", func() {
 			Ω(files).Should(HaveLen(9))
 			content, err := ioutil.ReadFile(filepath.Join(outDir, "client", "foo.go"))
 			Ω(err).ShouldNot(HaveOccurred())
-			Ω(content).Should(ContainSubstring("c.JWT1Signer.Sign(req)"))
+			Ω(content).Should(ContainSubstring(`		if err := c.JWT1Signer.Sign(req); err != nil {
+			return nil, err
+		}`))
 		})
 	})
 

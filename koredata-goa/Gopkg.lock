@@ -8,6 +8,12 @@
   revision = "9a4b6e10bed6220a1665955aa2b75afc91eb10b3"
 
 [[projects]]
+  name = "github.com/dgrijalva/jwt-go"
+  packages = ["."]
+  revision = "dbeaa9332f19a944acb5736b4456cfcc02140e29"
+  version = "v3.1.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/dimfeld/httppath"
   packages = ["."]
@@ -20,10 +26,10 @@
   version = "v5.0.0"
 
 [[projects]]
+  branch = "master"
   name = "github.com/goadesign/goa"
-  packages = [".","client","design","design/apidsl","dslengine","goatest","middleware","uuid"]
-  revision = "5646a430cdeb66983d5ace3384e0a667c185abc7"
-  version = "v1.3.0"
+  packages = [".","client","design","design/apidsl","dslengine","goatest","middleware","middleware/security/jwt","uuid"]
+  revision = "4d161c69bc5b667a0b64ceeca528dc2d114936d5"
 
 [[projects]]
   branch = "master"
@@ -100,6 +106,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "09bcce538b28e4c008eb1eca6389b8a42eb7cafc628bc63f37b1d56083aebc6c"
+  inputs-digest = "ab92f1c9af083db36b30bbbe37a404d502036ec8d20153b20940fdb841f21e1e"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -34,6 +34,7 @@ var _ = Describe("Service", func() {
 		It("initializes the service fields", func() {
 			Ω(s.Name).Should(Equal(appName))
 			Ω(s.Mux).ShouldNot(BeNil())
+			Ω(s.Server).ShouldNot(BeNil())
 		})
 	})
 
@@ -82,6 +83,28 @@ var _ = Describe("Service", func() {
 			It("calls the middleware once", func() {
 				Ω(middlewareCalled).Should(Equal(1))
 			})
+		})
+	})
+
+	Describe("MethodNotAllowed", func() {
+		var rw *TestResponseWriter
+		var req *http.Request
+
+		JustBeforeEach(func() {
+			rw = &TestResponseWriter{ParentHeader: http.Header{}}
+			s.Mux.ServeHTTP(rw, req)
+		})
+
+		BeforeEach(func() {
+			req, _ = http.NewRequest("GET", "/foo", nil)
+			s.Mux.Handle("POST", "/foo", func(rw http.ResponseWriter, req *http.Request, vals url.Values) {})
+			s.Mux.Handle("PUT", "/foo", func(rw http.ResponseWriter, req *http.Request, vals url.Values) {})
+		})
+
+		It("handles requests with wrong method but existing endpoint", func() {
+			Ω(rw.Status).Should(Equal(405))
+			Ω(rw.Header().Get("Allow")).Should(Or(Equal("POST, PUT"), Equal("PUT, POST")))
+			Ω(string(rw.Body)).Should(MatchRegexp(`{"id":".*","code":"method_not_allowed","status":405,"detail":".*","meta":{.*}}` + "\n"))
 		})
 	})
 
