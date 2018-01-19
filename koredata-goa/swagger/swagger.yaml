@@ -1,0 +1,196 @@
+consumes:
+- application/json
+- application/xml
+- application/gob
+- application/x-gob
+definitions:
+  CreateQuotePayload:
+    example:
+      Name: Number 8
+      Quote: Asti
+    properties:
+      Name:
+        example: Number 8
+        minLength: 2
+        type: string
+      Quote:
+        example: Asti
+        minLength: 2
+        type: string
+    required:
+    - Name
+    - Quote
+    title: CreateQuotePayload
+    type: object
+  Json:
+    description: A quote from the user database (default view)
+    example:
+      Quotes:
+      - ID: 5.271261e+18
+        Name: Accusantium nulla amet fugit adipisci non et.
+        Quote: Aliquid voluptatum.
+    properties:
+      Quotes:
+        description: Quote
+        example:
+        - ID: 5.271261e+18
+          Name: Accusantium nulla amet fugit adipisci non et.
+          Quote: Aliquid voluptatum.
+        items:
+          $ref: '#/definitions/Quote'
+        type: array
+    title: 'Mediatype identifier: application/json; view=default'
+    type: object
+  Quote:
+    description: All quotes for a given user ID
+    example:
+      ID: 5.271261e+18
+      Name: Accusantium nulla amet fugit adipisci non et.
+      Quote: Aliquid voluptatum.
+    properties:
+      ID:
+        description: ID of the user
+        example: 5.271261e+18
+        format: int64
+        type: integer
+      Name:
+        description: User ID of quoter
+        example: Accusantium nulla amet fugit adipisci non et.
+        type: string
+      Quote:
+        description: The actual quotes of the quoter
+        example: Aliquid voluptatum.
+        type: string
+    title: Quote
+    type: object
+info:
+  description: Allows users to interact with Jupiter Broadcasting's shows
+  title: The Kore of the Data
+  version: ""
+paths:
+  /quotes:
+    get:
+      description: Returns all quotes in the quote database
+      operationId: quote#list
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Json'
+        "401":
+          description: Unauthorized
+      schemes:
+      - http
+      summary: list quote
+      tags:
+      - quote
+    post:
+      description: |-
+        Create a quote and add it to the database
+
+        Required security scopes:
+          * `api:write`
+      operationId: quote#create
+      parameters:
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/CreateQuotePayload'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Json'
+        "401":
+          description: Unauthorized
+      schemes:
+      - http
+      security:
+      - jwt:
+        - api:write
+      summary: create quote
+      tags:
+      - quote
+  /quotes/{userId}:
+    get:
+      description: |-
+        Returns all the quotes for a given person
+
+        Required security scopes:
+          * `api:read`
+      operationId: quote#list by ID
+      parameters:
+      - description: User ID
+        in: path
+        name: userId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Json'
+        "401":
+          description: Unauthorized
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      security:
+      - jwt:
+        - api:read
+      summary: list by ID quote
+      tags:
+      - quote
+  /quotes/login:
+    post:
+      description: Login to the api
+      operationId: quote#login
+      responses:
+        "204":
+          description: No Content
+          headers:
+            Authorization:
+              description: Generated JWT
+              type: string
+        "401":
+          description: Unauthorized
+      schemes:
+      - http
+      security:
+      - BasicAuth: []
+      summary: login quote
+      tags:
+      - quote
+produces:
+- application/json
+- application/xml
+- application/gob
+- application/x-gob
+responses:
+  NotFound:
+    description: Not Found
+  OK:
+    description: OK
+    schema:
+      $ref: '#/definitions/Json'
+  Unauthorized:
+    description: Unauthorized
+schemes:
+- http
+securityDefinitions:
+  BasicAuth:
+    description: Use client ID and client secret to authenticate
+    type: basic
+  jwt:
+    description: |2-
+
+
+      **Security Scopes**:
+        * `api:read`: API read access
+        * `api:write`: API write access
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
