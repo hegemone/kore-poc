@@ -114,11 +114,7 @@ paths:
       - quote
   /quotes/{userId}:
     get:
-      description: |-
-        Returns all the quotes for a given person
-
-        Required security scopes:
-          * `api:read`
+      description: Returns all the quotes for a given person
       operationId: quote#list by ID
       parameters:
       - description: User ID
@@ -131,15 +127,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/Json'
-        "401":
-          description: Unauthorized
         "404":
           description: Not Found
       schemes:
       - http
-      security:
-      - jwt:
-        - api:read
       summary: list by ID quote
       tags:
       - quote

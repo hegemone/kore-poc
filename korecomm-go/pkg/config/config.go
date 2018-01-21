@@ -42,6 +42,7 @@ var mockConfig = map[string]interface{}{
 			Dir: os.Getenv(PluginDirEnvVar),
 			Enabled: []string{
 				"bacon.plugins.kore.nsk.io",
+				"quotes.plugins.kore.firstofth300.io",
 			},
 		},
 	},

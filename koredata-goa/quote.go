@@ -10,7 +10,7 @@ import (
 	"github.com/goadesign/goa"
 	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
-	"github.com/thefirstofthe300/kore-poc/koredata-goa/app"
+	"github.com/hegemone/kore-poc/koredata-goa/app"
 )
 
 // QuoteController implements the quote resource.

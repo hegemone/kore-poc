@@ -4,9 +4,9 @@
 //
 // Command:
 // $ goagen
-// --design=github.com/thefirstofthe300/kore-poc/koredata-goa/design
-// --out=$(GOPATH)/src/github.com/thefirstofthe300/kore-poc/koredata-goa
-// --version=v1.3.0
+// --design=github.com/hegemone/kore-poc/koredata-goa/design
+// --out=$(GOPATH)/src/github.com/hegemone/kore-poc/koredata-goa
+// --version=v1.3.1
 
 package client
 

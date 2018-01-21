@@ -11,7 +11,7 @@ import (
 	jwtgo "github.com/dgrijalva/jwt-go"
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/middleware/security/jwt"
-	"github.com/thefirstofthe300/kore-poc/koredata-goa/app"
+	"github.com/hegemone/kore-poc/koredata-goa/app"
 )
 
 func NewJWTMiddleware() (goa.Middleware, error) {
