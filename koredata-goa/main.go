@@ -7,9 +7,15 @@ import (
 
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/middleware"
+<<<<<<< HEAD
 	"github.com/hegemone/kore-poc/koredata-goa/app"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
+=======
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"github.com/thefirstofthe300/kore-poc/koredata-goa/app"
+>>>>>>> upstream/master
 )
 
 func main() {

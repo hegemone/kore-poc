@@ -4,9 +4,15 @@
 //
 // Command:
 // $ goagen
+<<<<<<< HEAD
 // --design=github.com/hegemone/kore-poc/koredata-goa/design
 // --out=$(GOPATH)/src/github.com/hegemone/kore-poc/koredata-goa
 // --version=v1.3.1
+=======
+// --design=github.com/thefirstofthe300/kore-poc/koredata-goa/design
+// --out=$(GOPATH)/src/github.com/thefirstofthe300/kore-poc/koredata-goa
+// --version=v1.3.0
+>>>>>>> upstream/master
 
 package app
 
@@ -179,6 +185,15 @@ func (ctx *ListByIDQuoteContext) OK(r *JSON) error {
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
 
+<<<<<<< HEAD
+=======
+// Unauthorized sends a HTTP response with status code 401.
+func (ctx *ListByIDQuoteContext) Unauthorized() error {
+	ctx.ResponseData.WriteHeader(401)
+	return nil
+}
+
+>>>>>>> upstream/master
 // NotFound sends a HTTP response with status code 404.
 func (ctx *ListByIDQuoteContext) NotFound() error {
 	ctx.ResponseData.WriteHeader(404)

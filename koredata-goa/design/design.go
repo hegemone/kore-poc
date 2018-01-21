@@ -60,11 +60,18 @@ var _ = Resource("quote", func() {
 	Action("list by ID", func() {
 		Description("Returns all the quotes for a given person")
 		Routing(GET("/:userId"))
+<<<<<<< HEAD
 		NoSecurity()
+=======
+>>>>>>> upstream/master
 		Params(func() {
 			Param("userId", String, "User ID")
 		})
 		Response(OK)
+<<<<<<< HEAD
+=======
+		Response(Unauthorized)
+>>>>>>> upstream/master
 		Response(NotFound)
 	})
 })

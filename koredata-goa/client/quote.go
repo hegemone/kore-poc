@@ -4,9 +4,15 @@
 //
 // Command:
 // $ goagen
+<<<<<<< HEAD
 // --design=github.com/hegemone/kore-poc/koredata-goa/design
 // --out=$(GOPATH)/src/github.com/hegemone/kore-poc/koredata-goa
 // --version=v1.3.1
+=======
+// --design=github.com/thefirstofthe300/kore-poc/koredata-goa/design
+// --out=$(GOPATH)/src/github.com/thefirstofthe300/kore-poc/koredata-goa
+// --version=v1.3.0
+>>>>>>> upstream/master
 
 package client
 
@@ -128,6 +134,14 @@ func (c *Client) NewListByIDQuoteRequest(ctx context.Context, path string) (*htt
 	if err != nil {
 		return nil, err
 	}
+<<<<<<< HEAD
+=======
+	if c.JWTSigner != nil {
+		if err := c.JWTSigner.Sign(req); err != nil {
+			return nil, err
+		}
+	}
+>>>>>>> upstream/master
 	return req, nil
 }
 

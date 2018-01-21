@@ -4,8 +4,14 @@
 //
 // Command:
 // $ goagen
+<<<<<<< HEAD
 // --design=github.com/hegemone/kore-poc/koredata-goa/design
 // --out=$(GOPATH)/src/github.com/hegemone/kore-poc/koredata-goa
 // --version=v1.3.1
+=======
+// --design=github.com/thefirstofthe300/kore-poc/koredata-goa/design
+// --out=$(GOPATH)/src/github.com/thefirstofthe300/kore-poc/koredata-goa
+// --version=v1.3.0
+>>>>>>> upstream/master
 
 package app

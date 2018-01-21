@@ -4,9 +4,15 @@
 //
 // Command:
 // $ goagen
+<<<<<<< HEAD
 // --design=github.com/hegemone/kore-poc/koredata-goa/design
 // --out=$(GOPATH)/src/github.com/hegemone/kore-poc/koredata-goa
 // --version=v1.3.1
+=======
+// --design=github.com/thefirstofthe300/kore-poc/koredata-goa/design
+// --out=$(GOPATH)/src/github.com/thefirstofthe300/kore-poc/koredata-goa
+// --version=v1.3.0
+>>>>>>> upstream/master
 
 package test
 
@@ -16,7 +22,11 @@ import (
 	"fmt"
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/goatest"
+<<<<<<< HEAD
 	"github.com/hegemone/kore-poc/koredata-goa/app"
+=======
+	"github.com/thefirstofthe300/kore-poc/koredata-goa/app"
+>>>>>>> upstream/master
 	"io"
 	"log"
 	"net/http"
@@ -410,6 +420,66 @@ func ListByIDQuoteOK(t goatest.TInterface, ctx context.Context, service *goa.Ser
 	return rw, mt
 }
 
+<<<<<<< HEAD
+=======
+// ListByIDQuoteUnauthorized runs the method ListByID of the given controller with the given parameters.
+// It returns the response writer so it's possible to inspect the response headers.
+// If ctx is nil then context.Background() is used.
+// If service is nil then a default service is created.
+func ListByIDQuoteUnauthorized(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.QuoteController, userID string) http.ResponseWriter {
+	// Setup service
+	var (
+		logBuf bytes.Buffer
+		resp   interface{}
+
+		respSetter goatest.ResponseSetterFunc = func(r interface{}) { resp = r }
+	)
+	if service == nil {
+		service = goatest.Service(&logBuf, respSetter)
+	} else {
+		logger := log.New(&logBuf, "", log.Ltime)
+		service.WithLogger(goa.NewLogger(logger))
+		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
+		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
+		service.Encoder.Register(newEncoder, "*/*")
+	}
+
+	// Setup request context
+	rw := httptest.NewRecorder()
+	u := &url.URL{
+		Path: fmt.Sprintf("/quotes/%v", userID),
+	}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		panic("invalid test " + err.Error()) // bug
+	}
+	prms := url.Values{}
+	prms["userId"] = []string{fmt.Sprintf("%v", userID)}
+	if ctx == nil {
+		ctx = context.Background()
+	}
+	goaCtx := goa.NewContext(goa.WithAction(ctx, "QuoteTest"), rw, req, prms)
+	listByIDCtx, _err := app.NewListByIDQuoteContext(goaCtx, req, service)
+	if _err != nil {
+		panic("invalid test data " + _err.Error()) // bug
+	}
+
+	// Perform action
+	_err = ctrl.ListByID(listByIDCtx)
+
+	// Validate response
+	if _err != nil {
+		t.Fatalf("controller returned %+v, logs:\n%s", _err, logBuf.String())
+	}
+	if rw.Code != 401 {
+		t.Errorf("invalid response status code: got %+v, expected 401", rw.Code)
+	}
+
+	// Return results
+	return rw
+}
+
+>>>>>>> upstream/master
 // LoginQuoteNoContent runs the method Login of the given controller with the given parameters.
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.

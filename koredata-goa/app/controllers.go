@@ -4,9 +4,15 @@
 //
 // Command:
 // $ goagen
+<<<<<<< HEAD
 // --design=github.com/hegemone/kore-poc/koredata-goa/design
 // --out=$(GOPATH)/src/github.com/hegemone/kore-poc/koredata-goa
 // --version=v1.3.1
+=======
+// --design=github.com/thefirstofthe300/kore-poc/koredata-goa/design
+// --out=$(GOPATH)/src/github.com/thefirstofthe300/kore-poc/koredata-goa
+// --version=v1.3.0
+>>>>>>> upstream/master
 
 package app
 
@@ -94,8 +100,14 @@ func MountQuoteController(service *goa.Service, ctrl QuoteController) {
 		}
 		return ctrl.ListByID(rctx)
 	}
+<<<<<<< HEAD
 	service.Mux.Handle("GET", "/quotes/:userId", ctrl.MuxHandler("list by ID", h, nil))
 	service.LogInfo("mount", "ctrl", "Quote", "action", "ListByID", "route", "GET /quotes/:userId")
+=======
+	h = handleSecurity("jwt", h, "api:read")
+	service.Mux.Handle("GET", "/quotes/:userId", ctrl.MuxHandler("list by ID", h, nil))
+	service.LogInfo("mount", "ctrl", "Quote", "action", "ListByID", "route", "GET /quotes/:userId", "security", "jwt")
+>>>>>>> upstream/master
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
