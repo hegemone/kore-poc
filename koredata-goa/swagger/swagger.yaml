@@ -5,63 +5,141 @@ consumes:
 - application/x-gob
 definitions:
   CreateQuotePayload:
+    description: All quotes for a given user ID
     example:
-      Name: Number 8
-      Quote: Asti
+      ID: 3.528801e+18
+      Name: Voluptate accusantium nulla.
+      Quote: Fugit adipisci non et et aliquid.
     properties:
+      ID:
+        description: ID of the user
+        example: 3.528801e+18
+        format: int64
+        type: integer
       Name:
-        example: Number 8
-        minLength: 2
+        description: User ID of quoter
+        example: Voluptate accusantium nulla.
         type: string
       Quote:
-        example: Asti
-        minLength: 2
+        description: The actual quotes of the quoter
+        example: Fugit adipisci non et et aliquid.
         type: string
     required:
     - Name
     - Quote
     title: CreateQuotePayload
     type: object
-  Json:
-    description: A quote from the user database (default view)
+  CreateSuggestionPayload:
+    description: All suggestions for a given user ID
     example:
-      Quotes:
-      - ID: 5.271261e+18
-        Name: Accusantium nulla amet fugit adipisci non et.
-        Quote: Aliquid voluptatum.
+      ShowID: Voluptatum pariatur incidunt illo ut.
+      Suggester: Voluptates commodi quidem nihil quia doloribus ut.
+      Title: Error ipsam totam.
     properties:
-      Quotes:
-        description: Quote
-        example:
-        - ID: 5.271261e+18
-          Name: Accusantium nulla amet fugit adipisci non et.
-          Quote: Aliquid voluptatum.
-        items:
-          $ref: '#/definitions/Quote'
-        type: array
-    title: 'Mediatype identifier: application/json; view=default'
+      ShowID:
+        description: The ID of the show
+        example: Voluptatum pariatur incidunt illo ut.
+        type: string
+      Suggester:
+        description: Identity of suggester
+        example: Voluptates commodi quidem nihil quia doloribus ut.
+        type: string
+      Title:
+        description: The suggested title
+        example: Error ipsam totam.
+        type: string
+    required:
+    - ShowID
+    - Suggester
+    - Title
+    title: CreateSuggestionPayload
     type: object
   Quote:
-    description: All quotes for a given user ID
+    description: All quotes for a given user ID (default view)
     example:
-      ID: 5.271261e+18
-      Name: Accusantium nulla amet fugit adipisci non et.
-      Quote: Aliquid voluptatum.
+      ID: 3.528801e+18
+      Name: Voluptate accusantium nulla.
+      Quote: Fugit adipisci non et et aliquid.
     properties:
       ID:
         description: ID of the user
-        example: 5.271261e+18
+        example: 3.528801e+18
         format: int64
         type: integer
       Name:
         description: User ID of quoter
-        example: Accusantium nulla amet fugit adipisci non et.
+        example: Voluptate accusantium nulla.
         type: string
       Quote:
         description: The actual quotes of the quoter
-        example: Aliquid voluptatum.
+        example: Fugit adipisci non et et aliquid.
         type: string
-    title: Quote
+    title: 'Mediatype identifier: vnd.application.io/quote; view=default'
+    type: object
+  Quotes:
+    description: A quote from the user database (default view)
+    example:
+      Quotes:
+      - ID: 3.528801e+18
+        Name: Voluptate accusantium nulla.
+        Quote: Fugit adipisci non et et aliquid.
+    properties:
+      Quotes:
+        description: Quote
+        example:
+        - ID: 3.528801e+18
+          Name: Voluptate accusantium nulla.
+          Quote: Fugit adipisci non et et aliquid.
+        items:
+          $ref: '#/definitions/Quote'
+        type: array
+    title: 'Mediatype identifier: vnd.application.io/quotes; view=default'
+    type: object
+  Suggestions:
+    description: Suggestions media type (default view)
+    example:
+      Suggestions:
+      - ShowID: Voluptatum pariatur incidunt illo ut.
+        Suggester: Voluptates commodi quidem nihil quia doloribus ut.
+        Title: Error ipsam totam.
+      - ShowID: Voluptatum pariatur incidunt illo ut.
+        Suggester: Voluptates commodi quidem nihil quia doloribus ut.
+        Title: Error ipsam totam.
+    properties:
+      Suggestions:
+        description: Suggestion
+        example:
+        - ShowID: Voluptatum pariatur incidunt illo ut.
+          Suggester: Voluptates commodi quidem nihil quia doloribus ut.
+          Title: Error ipsam totam.
+        - ShowID: Voluptatum pariatur incidunt illo ut.
+          Suggester: Voluptates commodi quidem nihil quia doloribus ut.
+          Title: Error ipsam totam.
+        items:
+          $ref: '#/definitions/suggestion'
+        type: array
+    title: 'Mediatype identifier: vnd.application.io/suggestions; view=default'
+    type: object
+  suggestion:
+    description: All suggestions for a given user ID
+    example:
+      ShowID: Voluptatum pariatur incidunt illo ut.
+      Suggester: Voluptates commodi quidem nihil quia doloribus ut.
+      Title: Error ipsam totam.
+    properties:
+      ShowID:
+        description: The ID of the show
+        example: Voluptatum pariatur incidunt illo ut.
+        type: string
+      Suggester:
+        description: Identity of suggester
+        example: Voluptates commodi quidem nihil quia doloribus ut.
+        type: string
+      Title:
+        description: The suggested title
+        example: Error ipsam totam.
+        type: string
+    title: suggestion
     type: object
 info:
   description: Allows users to interact with Jupiter Broadcasting's shows
@@ -72,11 +150,13 @@ paths:
     get:
       description: Returns all quotes in the quote database
       operationId: quote#list
+      produces:
+      - vnd.application.io/quotes
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/Json'
+            $ref: '#/definitions/Quotes'
         "401":
           description: Unauthorized
       schemes:
@@ -92,16 +172,19 @@ paths:
           * `api:write`
       operationId: quote#create
       parameters:
-      - in: body
+      - description: All quotes for a given user ID
+        in: body
         name: payload
         required: true
         schema:
           $ref: '#/definitions/CreateQuotePayload'
+      produces:
+      - vnd.application.io/quotes
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/Json'
+            $ref: '#/definitions/Quotes'
         "401":
           description: Unauthorized
       schemes:
@@ -114,15 +197,7 @@ paths:
       - quote
   /quotes/{userId}:
     get:
-<<<<<<< HEAD
       description: Returns all the quotes for a given person
-=======
-      description: |-
-        Returns all the quotes for a given person
-
-        Required security scopes:
-          * `api:read`
->>>>>>> upstream/master
       operationId: quote#list by ID
       parameters:
       - description: User ID
@@ -130,26 +205,17 @@ paths:
         name: userId
         required: true
         type: string
+      produces:
+      - vnd.application.io/quote
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/Json'
-<<<<<<< HEAD
-=======
-        "401":
-          description: Unauthorized
->>>>>>> upstream/master
+            $ref: '#/definitions/Quote'
         "404":
           description: Not Found
       schemes:
       - http
-<<<<<<< HEAD
-=======
-      security:
-      - jwt:
-        - api:read
->>>>>>> upstream/master
       summary: list by ID quote
       tags:
       - quote
@@ -173,18 +239,62 @@ paths:
       summary: login quote
       tags:
       - quote
+  /suggestion/:
+    post:
+      description: Create a new suggestion
+      operationId: suggestion#create
+      parameters:
+      - description: All suggestions for a given user ID
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/CreateSuggestionPayload'
+      responses:
+        "204":
+          description: No Content
+      schemes:
+      - http
+      summary: create suggestion
+      tags:
+      - suggestion
+  /suggestion/{showId}:
+    get:
+      description: Return all suggestions for a given show ID
+      operationId: suggestion#list
+      parameters:
+      - in: path
+        name: showId
+        required: true
+        type: string
+      produces:
+      - vnd.application.io/suggestions
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Suggestions'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: list suggestion
+      tags:
+      - suggestion
 produces:
 - application/json
 - application/xml
 - application/gob
 - application/x-gob
 responses:
+  NoContent:
+    description: No Content
   NotFound:
     description: Not Found
   OK:
     description: OK
     schema:
-      $ref: '#/definitions/Json'
+      $ref: '#/definitions/Quotes'
   Unauthorized:
     description: Unauthorized
 schemes:

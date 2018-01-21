@@ -4,15 +4,9 @@
 //
 // Command:
 // $ goagen
-<<<<<<< HEAD
 // --design=github.com/hegemone/kore-poc/koredata-goa/design
 // --out=$(GOPATH)/src/github.com/hegemone/kore-poc/koredata-goa
 // --version=v1.3.1
-=======
-// --design=github.com/thefirstofthe300/kore-poc/koredata-goa/design
-// --out=$(GOPATH)/src/github.com/thefirstofthe300/kore-poc/koredata-goa
-// --version=v1.3.0
->>>>>>> upstream/master
 
 package client
 
@@ -20,17 +14,51 @@ import (
 	"net/http"
 )
 
+// All quotes for a given user ID (default view)
+//
+// Identifier: vnd.application.io/quote; view=default
+type Quote struct {
+	// ID of the user
+	ID *int `form:"ID,omitempty" json:"ID,omitempty" xml:"ID,omitempty"`
+	// User ID of quoter
+	Name *string `form:"Name,omitempty" json:"Name,omitempty" xml:"Name,omitempty"`
+	// The actual quotes of the quoter
+	Quote *string `form:"Quote,omitempty" json:"Quote,omitempty" xml:"Quote,omitempty"`
+}
+
+// DecodeQuote decodes the Quote instance encoded in resp body.
+func (c *Client) DecodeQuote(resp *http.Response) (*Quote, error) {
+	var decoded Quote
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return &decoded, err
+}
+
 // A quote from the user database (default view)
 //
-// Identifier: application/json; view=default
-type JSON struct {
+// Identifier: vnd.application.io/quotes; view=default
+type Quotes struct {
 	// Quote
 	Quotes []*Quote `form:"Quotes,omitempty" json:"Quotes,omitempty" xml:"Quotes,omitempty"`
 }
 
-// DecodeJSON decodes the JSON instance encoded in resp body.
-func (c *Client) DecodeJSON(resp *http.Response) (*JSON, error) {
-	var decoded JSON
+// DecodeQuotes decodes the Quotes instance encoded in resp body.
+func (c *Client) DecodeQuotes(resp *http.Response) (*Quotes, error) {
+	var decoded Quotes
+	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
+	return &decoded, err
+}
+
+// Suggestions media type (default view)
+//
+// Identifier: vnd.application.io/suggestions; view=default
+type Suggestions struct {
+	// Suggestion
+	Suggestions []*Suggestion `form:"Suggestions,omitempty" json:"Suggestions,omitempty" xml:"Suggestions,omitempty"`
+}
+
+// DecodeSuggestions decodes the Suggestions instance encoded in resp body.
+func (c *Client) DecodeSuggestions(resp *http.Response) (*Suggestions, error) {
+	var decoded Suggestions
 	err := c.Decoder.Decode(&decoded, resp.Body, resp.Header.Get("Content-Type"))
 	return &decoded, err
 }

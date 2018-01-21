@@ -4,15 +4,9 @@
 //
 // Command:
 // $ goagen
-<<<<<<< HEAD
 // --design=github.com/hegemone/kore-poc/koredata-goa/design
 // --out=$(GOPATH)/src/github.com/hegemone/kore-poc/koredata-goa
 // --version=v1.3.1
-=======
-// --design=github.com/thefirstofthe300/kore-poc/koredata-goa/design
-// --out=$(GOPATH)/src/github.com/thefirstofthe300/kore-poc/koredata-goa
-// --version=v1.3.0
->>>>>>> upstream/master
 
 package test
 
@@ -22,11 +16,7 @@ import (
 	"fmt"
 	"github.com/goadesign/goa"
 	"github.com/goadesign/goa/goatest"
-<<<<<<< HEAD
 	"github.com/hegemone/kore-poc/koredata-goa/app"
-=======
-	"github.com/thefirstofthe300/kore-poc/koredata-goa/app"
->>>>>>> upstream/master
 	"io"
 	"log"
 	"net/http"
@@ -38,7 +28,7 @@ import (
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func CreateQuoteOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.QuoteController, payload *app.CreateQuotePayload) (http.ResponseWriter, *app.JSON) {
+func CreateQuoteOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.QuoteController, payload *app.CreateQuotePayload) (http.ResponseWriter, *app.Quotes) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -97,12 +87,12 @@ func CreateQuoteOK(t goatest.TInterface, ctx context.Context, service *goa.Servi
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt *app.JSON
+	var mt *app.Quotes
 	if resp != nil {
 		var _ok bool
-		mt, _ok = resp.(*app.JSON)
+		mt, _ok = resp.(*app.Quotes)
 		if !_ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.JSON", resp, resp)
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.Quotes", resp, resp)
 		}
 	}
 
@@ -182,7 +172,7 @@ func CreateQuoteUnauthorized(t goatest.TInterface, ctx context.Context, service 
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ListQuoteOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.QuoteController) (http.ResponseWriter, *app.JSON) {
+func ListQuoteOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.QuoteController) (http.ResponseWriter, *app.Quotes) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -229,12 +219,12 @@ func ListQuoteOK(t goatest.TInterface, ctx context.Context, service *goa.Service
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt *app.JSON
+	var mt *app.Quotes
 	if resp != nil {
 		var ok bool
-		mt, ok = resp.(*app.JSON)
+		mt, ok = resp.(*app.Quotes)
 		if !ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.JSON", resp, resp)
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.Quotes", resp, resp)
 		}
 	}
 
@@ -359,7 +349,7 @@ func ListByIDQuoteNotFound(t goatest.TInterface, ctx context.Context, service *g
 // It returns the response writer so it's possible to inspect the response headers and the media type struct written to the response.
 // If ctx is nil then context.Background() is used.
 // If service is nil then a default service is created.
-func ListByIDQuoteOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.QuoteController, userID string) (http.ResponseWriter, *app.JSON) {
+func ListByIDQuoteOK(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.QuoteController, userID string) (http.ResponseWriter, *app.Quote) {
 	// Setup service
 	var (
 		logBuf bytes.Buffer
@@ -407,12 +397,12 @@ func ListByIDQuoteOK(t goatest.TInterface, ctx context.Context, service *goa.Ser
 	if rw.Code != 200 {
 		t.Errorf("invalid response status code: got %+v, expected 200", rw.Code)
 	}
-	var mt *app.JSON
+	var mt *app.Quote
 	if resp != nil {
 		var ok bool
-		mt, ok = resp.(*app.JSON)
+		mt, ok = resp.(*app.Quote)
 		if !ok {
-			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.JSON", resp, resp)
+			t.Fatalf("invalid response media: got variable of type %T, value %+v, expected instance of app.Quote", resp, resp)
 		}
 	}
 
@@ -420,66 +410,6 @@ func ListByIDQuoteOK(t goatest.TInterface, ctx context.Context, service *goa.Ser
 	return rw, mt
 }
 
-<<<<<<< HEAD
-=======
-// ListByIDQuoteUnauthorized runs the method ListByID of the given controller with the given parameters.
-// It returns the response writer so it's possible to inspect the response headers.
-// If ctx is nil then context.Background() is used.
-// If service is nil then a default service is created.
-func ListByIDQuoteUnauthorized(t goatest.TInterface, ctx context.Context, service *goa.Service, ctrl app.QuoteController, userID string) http.ResponseWriter {
-	// Setup service
-	var (
-		logBuf bytes.Buffer
-		resp   interface{}
-
-		respSetter goatest.ResponseSetterFunc = func(r interface{}) { resp = r }
-	)
-	if service == nil {
-		service = goatest.Service(&logBuf, respSetter)
-	} else {
-		logger := log.New(&logBuf, "", log.Ltime)
-		service.WithLogger(goa.NewLogger(logger))
-		newEncoder := func(io.Writer) goa.Encoder { return respSetter }
-		service.Encoder = goa.NewHTTPEncoder() // Make sure the code ends up using this decoder
-		service.Encoder.Register(newEncoder, "*/*")
-	}
-
-	// Setup request context
-	rw := httptest.NewRecorder()
-	u := &url.URL{
-		Path: fmt.Sprintf("/quotes/%v", userID),
-	}
-	req, err := http.NewRequest("GET", u.String(), nil)
-	if err != nil {
-		panic("invalid test " + err.Error()) // bug
-	}
-	prms := url.Values{}
-	prms["userId"] = []string{fmt.Sprintf("%v", userID)}
-	if ctx == nil {
-		ctx = context.Background()
-	}
-	goaCtx := goa.NewContext(goa.WithAction(ctx, "QuoteTest"), rw, req, prms)
-	listByIDCtx, _err := app.NewListByIDQuoteContext(goaCtx, req, service)
-	if _err != nil {
-		panic("invalid test data " + _err.Error()) // bug
-	}
-
-	// Perform action
-	_err = ctrl.ListByID(listByIDCtx)
-
-	// Validate response
-	if _err != nil {
-		t.Fatalf("controller returned %+v, logs:\n%s", _err, logBuf.String())
-	}
-	if rw.Code != 401 {
-		t.Errorf("invalid response status code: got %+v, expected 401", rw.Code)
-	}
-
-	// Return results
-	return rw
-}
-
->>>>>>> upstream/master
 // LoginQuoteNoContent runs the method Login of the given controller with the given parameters.
 // It returns the response writer so it's possible to inspect the response headers.
 // If ctx is nil then context.Background() is used.

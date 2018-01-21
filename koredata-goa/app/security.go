@@ -4,15 +4,9 @@
 //
 // Command:
 // $ goagen
-<<<<<<< HEAD
 // --design=github.com/hegemone/kore-poc/koredata-goa/design
 // --out=$(GOPATH)/src/github.com/hegemone/kore-poc/koredata-goa
 // --version=v1.3.1
-=======
-// --design=github.com/thefirstofthe300/kore-poc/koredata-goa/design
-// --out=$(GOPATH)/src/github.com/thefirstofthe300/kore-poc/koredata-goa
-// --version=v1.3.0
->>>>>>> upstream/master
 
 package app
 
@@ -26,6 +20,18 @@ type (
 	// Private type used to store auth handler info in request context
 	authMiddlewareKey string
 )
+
+// UseBasicAuthMiddleware mounts the BasicAuth auth middleware onto the service.
+func UseBasicAuthMiddleware(service *goa.Service, middleware goa.Middleware) {
+	service.Context = context.WithValue(service.Context, authMiddlewareKey("BasicAuth"), middleware)
+}
+
+// NewBasicAuthSecurity creates a BasicAuth security definition.
+func NewBasicAuthSecurity() *goa.BasicAuthSecurity {
+	def := goa.BasicAuthSecurity{}
+	def.Description = "Use client ID and client secret to authenticate"
+	return &def
+}
 
 // UseJWTMiddleware mounts the jwt auth middleware onto the service.
 func UseJWTMiddleware(service *goa.Service, middleware goa.Middleware) {
@@ -43,18 +49,6 @@ func NewJWTSecurity() *goa.JWTSecurity {
 			"api:write": "API write access",
 		},
 	}
-	return &def
-}
-
-// UseBasicAuthMiddleware mounts the BasicAuth auth middleware onto the service.
-func UseBasicAuthMiddleware(service *goa.Service, middleware goa.Middleware) {
-	service.Context = context.WithValue(service.Context, authMiddlewareKey("BasicAuth"), middleware)
-}
-
-// NewBasicAuthSecurity creates a BasicAuth security definition.
-func NewBasicAuthSecurity() *goa.BasicAuthSecurity {
-	def := goa.BasicAuthSecurity{}
-	def.Description = "Use client ID and client secret to authenticate"
 	return &def
 }
 

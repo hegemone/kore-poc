@@ -4,15 +4,9 @@
 //
 // Command:
 // $ goagen
-<<<<<<< HEAD
 // --design=github.com/hegemone/kore-poc/koredata-goa/design
 // --out=$(GOPATH)/src/github.com/hegemone/kore-poc/koredata-goa
 // --version=v1.3.1
-=======
-// --design=github.com/thefirstofthe300/kore-poc/koredata-goa/design
-// --out=$(GOPATH)/src/github.com/thefirstofthe300/kore-poc/koredata-goa
-// --version=v1.3.0
->>>>>>> upstream/master
 
 package app
 
@@ -100,14 +94,8 @@ func MountQuoteController(service *goa.Service, ctrl QuoteController) {
 		}
 		return ctrl.ListByID(rctx)
 	}
-<<<<<<< HEAD
 	service.Mux.Handle("GET", "/quotes/:userId", ctrl.MuxHandler("list by ID", h, nil))
 	service.LogInfo("mount", "ctrl", "Quote", "action", "ListByID", "route", "GET /quotes/:userId")
-=======
-	h = handleSecurity("jwt", h, "api:read")
-	service.Mux.Handle("GET", "/quotes/:userId", ctrl.MuxHandler("list by ID", h, nil))
-	service.LogInfo("mount", "ctrl", "Quote", "action", "ListByID", "route", "GET /quotes/:userId", "security", "jwt")
->>>>>>> upstream/master
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -129,6 +117,70 @@ func MountQuoteController(service *goa.Service, ctrl QuoteController) {
 // unmarshalCreateQuotePayload unmarshals the request body into the context request data Payload field.
 func unmarshalCreateQuotePayload(ctx context.Context, service *goa.Service, req *http.Request) error {
 	payload := &createQuotePayload{}
+	if err := service.DecodeRequest(req, payload); err != nil {
+		return err
+	}
+	if err := payload.Validate(); err != nil {
+		// Initialize payload with private data structure so it can be logged
+		goa.ContextRequest(ctx).Payload = payload
+		return err
+	}
+	goa.ContextRequest(ctx).Payload = payload.Publicize()
+	return nil
+}
+
+// SuggestionController is the controller interface for the Suggestion actions.
+type SuggestionController interface {
+	goa.Muxer
+	Create(*CreateSuggestionContext) error
+	List(*ListSuggestionContext) error
+}
+
+// MountSuggestionController "mounts" a Suggestion resource controller on the given service.
+func MountSuggestionController(service *goa.Service, ctrl SuggestionController) {
+	initService(service)
+	var h goa.Handler
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewCreateSuggestionContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		// Build the payload
+		if rawPayload := goa.ContextRequest(ctx).Payload; rawPayload != nil {
+			rctx.Payload = rawPayload.(*CreateSuggestionPayload)
+		} else {
+			return goa.MissingPayloadError()
+		}
+		return ctrl.Create(rctx)
+	}
+	service.Mux.Handle("POST", "/suggestion/", ctrl.MuxHandler("create", h, unmarshalCreateSuggestionPayload))
+	service.LogInfo("mount", "ctrl", "Suggestion", "action", "Create", "route", "POST /suggestion/")
+
+	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		// Check if there was an error loading the request
+		if err := goa.ContextError(ctx); err != nil {
+			return err
+		}
+		// Build the context
+		rctx, err := NewListSuggestionContext(ctx, req, service)
+		if err != nil {
+			return err
+		}
+		return ctrl.List(rctx)
+	}
+	service.Mux.Handle("GET", "/suggestion/:showId", ctrl.MuxHandler("list", h, nil))
+	service.LogInfo("mount", "ctrl", "Suggestion", "action", "List", "route", "GET /suggestion/:showId")
+}
+
+// unmarshalCreateSuggestionPayload unmarshals the request body into the context request data Payload field.
+func unmarshalCreateSuggestionPayload(ctx context.Context, service *goa.Service, req *http.Request) error {
+	payload := &createSuggestionPayload{}
 	if err := service.DecodeRequest(req, payload); err != nil {
 		return err
 	}

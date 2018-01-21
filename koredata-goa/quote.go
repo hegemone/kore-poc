@@ -8,13 +8,9 @@ import (
 
 	jwtgo "github.com/dgrijalva/jwt-go"
 	"github.com/goadesign/goa"
+	"github.com/hegemone/kore-poc/koredata-goa/app"
 	"github.com/jinzhu/gorm"
 	uuid "github.com/satori/go.uuid"
-<<<<<<< HEAD
-	"github.com/hegemone/kore-poc/koredata-goa/app"
-=======
-	"github.com/thefirstofthe300/kore-poc/koredata-goa/app"
->>>>>>> upstream/master
 )
 
 // QuoteController implements the quote resource.
@@ -71,7 +67,7 @@ func (c *QuoteController) Login(ctx *app.LoginQuoteContext) error {
 // List runs the list action.
 func (c *QuoteController) List(ctx *app.ListQuoteContext) error {
 
-	response := &app.JSON{}
+	response := &app.Quotes{}
 
 	c.db.Find(&response.Quotes)
 
@@ -80,7 +76,7 @@ func (c *QuoteController) List(ctx *app.ListQuoteContext) error {
 
 // CreateQuote runs the create action
 func (c *QuoteController) Create(ctx *app.CreateQuoteContext) error {
-	response := &app.JSON{}
+	response := &app.Quotes{}
 
 	quote := &app.Quote{
 		Name:  &ctx.Payload.Name,
@@ -94,13 +90,9 @@ func (c *QuoteController) Create(ctx *app.CreateQuoteContext) error {
 
 // ListByID runs the list by ID action.
 func (c *QuoteController) ListByID(ctx *app.ListByIDQuoteContext) error {
-	response := &app.JSON{}
+	response := &app.Quote{}
 
-	var quote app.Quote
-
-	c.db.Where("name = ?", ctx.UserID).First(&quote)
-
-	response.Quotes = append(response.Quotes, &quote)
+	c.db.Where("name = ?", ctx.UserID).First(&response)
 
 	return ctx.OK(response)
 }

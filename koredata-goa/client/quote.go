@@ -4,15 +4,9 @@
 //
 // Command:
 // $ goagen
-<<<<<<< HEAD
 // --design=github.com/hegemone/kore-poc/koredata-goa/design
 // --out=$(GOPATH)/src/github.com/hegemone/kore-poc/koredata-goa
 // --version=v1.3.1
-=======
-// --design=github.com/thefirstofthe300/kore-poc/koredata-goa/design
-// --out=$(GOPATH)/src/github.com/thefirstofthe300/kore-poc/koredata-goa
-// --version=v1.3.0
->>>>>>> upstream/master
 
 package client
 
@@ -26,7 +20,11 @@ import (
 
 // CreateQuotePayload is the quote create action payload.
 type CreateQuotePayload struct {
-	Name  string `form:"Name" json:"Name" xml:"Name"`
+	// ID of the user
+	ID *int `form:"ID,omitempty" json:"ID,omitempty" xml:"ID,omitempty"`
+	// User ID of quoter
+	Name string `form:"Name" json:"Name" xml:"Name"`
+	// The actual quotes of the quoter
 	Quote string `form:"Quote" json:"Quote" xml:"Quote"`
 }
 
@@ -129,19 +127,11 @@ func (c *Client) NewListByIDQuoteRequest(ctx context.Context, path string) (*htt
 	if scheme == "" {
 		scheme = "http"
 	}
-	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
+	u := url.URL{Host: c.Host, Scheme: scheme, Path: ListByIDQuotePath(path)}
 	req, err := http.NewRequest("GET", u.String(), nil)
 	if err != nil {
 		return nil, err
 	}
-<<<<<<< HEAD
-=======
-	if c.JWTSigner != nil {
-		if err := c.JWTSigner.Sign(req); err != nil {
-			return nil, err
-		}
-	}
->>>>>>> upstream/master
 	return req, nil
 }
 

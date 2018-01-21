@@ -2,12 +2,11 @@
 package main
 
 import (
-	"encoding/json"
+	"context"
 	"fmt"
 	"github.com/hegemone/kore-poc/korecomm-go/pkg/comm"
-	"github.com/hegemone/kore-poc/koredata-goa/app"
+	ioclient "github.com/hegemone/kore-poc/koredata-goa/client"
 	log "github.com/sirupsen/logrus"
-	"net/http"
 	"strings"
 )
 
@@ -30,24 +29,25 @@ func CmdGetQuote(p *comm.CmdDelegate) {
 
 	quotee := strings.Fields(p.Submatches[0])[1]
 
-	koreClient := http.Client{}
+	ctx := context.TODO()
+	koreClient := ioclient.New(nil)
+	koreClient.Client.Host = "127.0.0.1:8080"
 
-	quotesJson, err := koreClient.Get("http://localhost:8080/quotes/" + quotee)
+	response, err := koreClient.ListByIDQuote(ctx, quotee)
 
 	if err != nil {
-		log.Infof("unable to fetch quotes json: %s", err)
+		log.Infof("error on calling data server: %s", err)
 	}
 
-	if quotesJson != nil {
-		var quotes app.JSON
-		log.Info("Decoding JSON")
-		decoder := json.NewDecoder(quotesJson.Body)
-		decoder.Decode(&quotes)
-		log.Info("Decoded JSON")
-		log.Info(len(quotes.Quotes))
+	if response != nil {
+		quote, err := koreClient.DecodeQuote(response)
+
+		if err != nil {
+			log.Infof("unable to decode quote: %s", err)
+		}
 		response := fmt.Sprintf(
 			"%s - %s",
-			*quotes.Quotes[0].Quote, *quotes.Quotes[0].Name,
+			*quote.Quote, *quote.Name,
 		)
 
 		p.SendResponse(response)

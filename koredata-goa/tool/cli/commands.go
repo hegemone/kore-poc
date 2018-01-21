@@ -4,9 +4,9 @@
 //
 // Command:
 // $ goagen
-// --design=github.com/thefirstofthe300/kore-poc/koredata-goa/design
-// --out=$(GOPATH)/src/github.com/thefirstofthe300/kore-poc/koredata-goa
-// --version=v1.3.0
+// --design=github.com/hegemone/kore-poc/koredata-goa/design
+// --out=$(GOPATH)/src/github.com/hegemone/kore-poc/koredata-goa
+// --version=v1.3.1
 
 package cli
 
@@ -17,8 +17,8 @@ import (
 	"github.com/goadesign/goa"
 	goaclient "github.com/goadesign/goa/client"
 	uuid "github.com/goadesign/goa/uuid"
+	"github.com/hegemone/kore-poc/koredata-goa/client"
 	"github.com/spf13/cobra"
-	"github.com/thefirstofthe300/kore-poc/koredata-goa/client"
 	"log"
 	"net/url"
 	"os"
@@ -51,6 +51,19 @@ type (
 	LoginQuoteCommand struct {
 		PrettyPrint bool
 	}
+
+	// CreateSuggestionCommand is the command line data structure for the create action of suggestion
+	CreateSuggestionCommand struct {
+		Payload     string
+		ContentType string
+		PrettyPrint bool
+	}
+
+	// ListSuggestionCommand is the command line data structure for the list action of suggestion
+	ListSuggestionCommand struct {
+		ShowID      string
+		PrettyPrint bool
+	}
 )
 
 // RegisterCommands registers the resource action CLI commands.
@@ -58,7 +71,7 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	var command, sub *cobra.Command
 	command = &cobra.Command{
 		Use:   "create",
-		Short: `Create a quote and add it to the database`,
+		Short: `create action`,
 	}
 	tmp1 := new(CreateQuoteCommand)
 	sub = &cobra.Command{
@@ -69,55 +82,83 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 Payload example:
 
 {
-   "Name": "Number 8",
-   "Quote": "Asti"
+   "ID": 3528800885526400431,
+   "Name": "Voluptate accusantium nulla.",
+   "Quote": "Fugit adipisci non et et aliquid."
 }`,
 		RunE: func(cmd *cobra.Command, args []string) error { return tmp1.Run(c, args) },
 	}
 	tmp1.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp1.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "list",
-		Short: `Returns all quotes in the quote database`,
-	}
-	tmp2 := new(ListQuoteCommand)
+	tmp2 := new(CreateSuggestionCommand)
 	sub = &cobra.Command{
-		Use:   `quote ["/quotes"]`,
+		Use:   `suggestion ["/suggestion/"]`,
 		Short: ``,
-		RunE:  func(cmd *cobra.Command, args []string) error { return tmp2.Run(c, args) },
+		Long: `
+
+Payload example:
+
+{
+   "ShowID": "Voluptatum pariatur incidunt illo ut.",
+   "Suggester": "Voluptates commodi quidem nihil quia doloribus ut.",
+   "Title": "Error ipsam totam."
+}`,
+		RunE: func(cmd *cobra.Command, args []string) error { return tmp2.Run(c, args) },
 	}
 	tmp2.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp2.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
 	app.AddCommand(command)
 	command = &cobra.Command{
-		Use:   "list-byid",
-		Short: `Returns all the quotes for a given person`,
+		Use:   "list",
+		Short: `list action`,
 	}
-	tmp3 := new(ListByIDQuoteCommand)
+	tmp3 := new(ListQuoteCommand)
 	sub = &cobra.Command{
-		Use:   `quote ["/quotes/USERID"]`,
+		Use:   `quote ["/quotes"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp3.Run(c, args) },
 	}
 	tmp3.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp3.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
-	app.AddCommand(command)
-	command = &cobra.Command{
-		Use:   "login",
-		Short: `Login to the api`,
-	}
-	tmp4 := new(LoginQuoteCommand)
+	tmp4 := new(ListSuggestionCommand)
 	sub = &cobra.Command{
-		Use:   `quote ["/quotes/login"]`,
+		Use:   `suggestion ["/suggestion/SHOWID"]`,
 		Short: ``,
 		RunE:  func(cmd *cobra.Command, args []string) error { return tmp4.Run(c, args) },
 	}
 	tmp4.RegisterFlags(sub, c)
 	sub.PersistentFlags().BoolVar(&tmp4.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "list-byid",
+		Short: `Returns all the quotes for a given person`,
+	}
+	tmp5 := new(ListByIDQuoteCommand)
+	sub = &cobra.Command{
+		Use:   `quote ["/quotes/USERID"]`,
+		Short: ``,
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp5.Run(c, args) },
+	}
+	tmp5.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp5.PrettyPrint, "pp", false, "Pretty print response body")
+	command.AddCommand(sub)
+	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "login",
+		Short: `Login to the api`,
+	}
+	tmp6 := new(LoginQuoteCommand)
+	sub = &cobra.Command{
+		Use:   `quote ["/quotes/login"]`,
+		Short: ``,
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp6.Run(c, args) },
+	}
+	tmp6.RegisterFlags(sub, c)
+	sub.PersistentFlags().BoolVar(&tmp6.PrettyPrint, "pp", false, "Pretty print response body")
 	command.AddCommand(sub)
 	app.AddCommand(command)
 }
@@ -380,4 +421,63 @@ func (cmd *LoginQuoteCommand) Run(c *client.Client, args []string) error {
 
 // RegisterFlags registers the command flags with the command line.
 func (cmd *LoginQuoteCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+}
+
+// Run makes the HTTP request corresponding to the CreateSuggestionCommand command.
+func (cmd *CreateSuggestionCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = "/suggestion/"
+	}
+	var payload client.CreateSuggestionPayload
+	if cmd.Payload != "" {
+		err := json.Unmarshal([]byte(cmd.Payload), &payload)
+		if err != nil {
+			return fmt.Errorf("failed to deserialize payload: %s", err)
+		}
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.CreateSuggestion(ctx, path, &payload, cmd.ContentType)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *CreateSuggestionCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	cc.Flags().StringVar(&cmd.Payload, "payload", "", "Request body encoded in JSON")
+	cc.Flags().StringVar(&cmd.ContentType, "content", "", "Request content type override, e.g. 'application/x-www-form-urlencoded'")
+}
+
+// Run makes the HTTP request corresponding to the ListSuggestionCommand command.
+func (cmd *ListSuggestionCommand) Run(c *client.Client, args []string) error {
+	var path string
+	if len(args) > 0 {
+		path = args[0]
+	} else {
+		path = fmt.Sprintf("/suggestion/%v", url.QueryEscape(cmd.ShowID))
+	}
+	logger := goa.NewLogger(log.New(os.Stderr, "", log.LstdFlags))
+	ctx := goa.WithLogger(context.Background(), logger)
+	resp, err := c.ListSuggestion(ctx, path)
+	if err != nil {
+		goa.LogError(ctx, "failed", "err", err)
+		return err
+	}
+
+	goaclient.HandleResponse(c.Client, resp, cmd.PrettyPrint)
+	return nil
+}
+
+// RegisterFlags registers the command flags with the command line.
+func (cmd *ListSuggestionCommand) RegisterFlags(cc *cobra.Command, c *client.Client) {
+	var showID string
+	cc.Flags().StringVar(&cmd.ShowID, "showId", showID, ``)
 }

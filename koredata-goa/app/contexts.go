@@ -4,15 +4,9 @@
 //
 // Command:
 // $ goagen
-<<<<<<< HEAD
 // --design=github.com/hegemone/kore-poc/koredata-goa/design
 // --out=$(GOPATH)/src/github.com/hegemone/kore-poc/koredata-goa
 // --version=v1.3.1
-=======
-// --design=github.com/thefirstofthe300/kore-poc/koredata-goa/design
-// --out=$(GOPATH)/src/github.com/thefirstofthe300/kore-poc/koredata-goa
-// --version=v1.3.0
->>>>>>> upstream/master
 
 package app
 
@@ -20,7 +14,6 @@ import (
 	"context"
 	"github.com/goadesign/goa"
 	"net/http"
-	"unicode/utf8"
 )
 
 // CreateQuoteContext provides the quote create action context.
@@ -45,7 +38,11 @@ func NewCreateQuoteContext(ctx context.Context, r *http.Request, service *goa.Se
 
 // createQuotePayload is the quote create action payload.
 type createQuotePayload struct {
-	Name  *string `form:"Name,omitempty" json:"Name,omitempty" xml:"Name,omitempty"`
+	// ID of the user
+	ID *int `form:"ID,omitempty" json:"ID,omitempty" xml:"ID,omitempty"`
+	// User ID of quoter
+	Name *string `form:"Name,omitempty" json:"Name,omitempty" xml:"Name,omitempty"`
+	// The actual quotes of the quoter
 	Quote *string `form:"Quote,omitempty" json:"Quote,omitempty" xml:"Quote,omitempty"`
 }
 
@@ -57,22 +54,15 @@ func (payload *createQuotePayload) Validate() (err error) {
 	if payload.Quote == nil {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "Quote"))
 	}
-	if payload.Name != nil {
-		if utf8.RuneCountInString(*payload.Name) < 2 {
-			err = goa.MergeErrors(err, goa.InvalidLengthError(`raw.Name`, *payload.Name, utf8.RuneCountInString(*payload.Name), 2, true))
-		}
-	}
-	if payload.Quote != nil {
-		if utf8.RuneCountInString(*payload.Quote) < 2 {
-			err = goa.MergeErrors(err, goa.InvalidLengthError(`raw.Quote`, *payload.Quote, utf8.RuneCountInString(*payload.Quote), 2, true))
-		}
-	}
 	return
 }
 
 // Publicize creates CreateQuotePayload from createQuotePayload
 func (payload *createQuotePayload) Publicize() *CreateQuotePayload {
 	var pub CreateQuotePayload
+	if payload.ID != nil {
+		pub.ID = payload.ID
+	}
 	if payload.Name != nil {
 		pub.Name = *payload.Name
 	}
@@ -84,7 +74,11 @@ func (payload *createQuotePayload) Publicize() *CreateQuotePayload {
 
 // CreateQuotePayload is the quote create action payload.
 type CreateQuotePayload struct {
-	Name  string `form:"Name" json:"Name" xml:"Name"`
+	// ID of the user
+	ID *int `form:"ID,omitempty" json:"ID,omitempty" xml:"ID,omitempty"`
+	// User ID of quoter
+	Name string `form:"Name" json:"Name" xml:"Name"`
+	// The actual quotes of the quoter
 	Quote string `form:"Quote" json:"Quote" xml:"Quote"`
 }
 
@@ -96,19 +90,13 @@ func (payload *CreateQuotePayload) Validate() (err error) {
 	if payload.Quote == "" {
 		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "Quote"))
 	}
-	if utf8.RuneCountInString(payload.Name) < 2 {
-		err = goa.MergeErrors(err, goa.InvalidLengthError(`raw.Name`, payload.Name, utf8.RuneCountInString(payload.Name), 2, true))
-	}
-	if utf8.RuneCountInString(payload.Quote) < 2 {
-		err = goa.MergeErrors(err, goa.InvalidLengthError(`raw.Quote`, payload.Quote, utf8.RuneCountInString(payload.Quote), 2, true))
-	}
 	return
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *CreateQuoteContext) OK(r *JSON) error {
+func (ctx *CreateQuoteContext) OK(r *Quotes) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
-		ctx.ResponseData.Header().Set("Content-Type", "application/json")
+		ctx.ResponseData.Header().Set("Content-Type", "vnd.application.io/quotes")
 	}
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
@@ -139,9 +127,9 @@ func NewListQuoteContext(ctx context.Context, r *http.Request, service *goa.Serv
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *ListQuoteContext) OK(r *JSON) error {
+func (ctx *ListQuoteContext) OK(r *Quotes) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
-		ctx.ResponseData.Header().Set("Content-Type", "application/json")
+		ctx.ResponseData.Header().Set("Content-Type", "vnd.application.io/quotes")
 	}
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
@@ -178,22 +166,13 @@ func NewListByIDQuoteContext(ctx context.Context, r *http.Request, service *goa.
 }
 
 // OK sends a HTTP response with status code 200.
-func (ctx *ListByIDQuoteContext) OK(r *JSON) error {
+func (ctx *ListByIDQuoteContext) OK(r *Quote) error {
 	if ctx.ResponseData.Header().Get("Content-Type") == "" {
-		ctx.ResponseData.Header().Set("Content-Type", "application/json")
+		ctx.ResponseData.Header().Set("Content-Type", "vnd.application.io/quote")
 	}
 	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
 }
 
-<<<<<<< HEAD
-=======
-// Unauthorized sends a HTTP response with status code 401.
-func (ctx *ListByIDQuoteContext) Unauthorized() error {
-	ctx.ResponseData.WriteHeader(401)
-	return nil
-}
-
->>>>>>> upstream/master
 // NotFound sends a HTTP response with status code 404.
 func (ctx *ListByIDQuoteContext) NotFound() error {
 	ctx.ResponseData.WriteHeader(404)
@@ -228,5 +207,133 @@ func (ctx *LoginQuoteContext) NoContent() error {
 // Unauthorized sends a HTTP response with status code 401.
 func (ctx *LoginQuoteContext) Unauthorized() error {
 	ctx.ResponseData.WriteHeader(401)
+	return nil
+}
+
+// CreateSuggestionContext provides the suggestion create action context.
+type CreateSuggestionContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	Payload *CreateSuggestionPayload
+}
+
+// NewCreateSuggestionContext parses the incoming request URL and body, performs validations and creates the
+// context used by the suggestion controller create action.
+func NewCreateSuggestionContext(ctx context.Context, r *http.Request, service *goa.Service) (*CreateSuggestionContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := CreateSuggestionContext{Context: ctx, ResponseData: resp, RequestData: req}
+	return &rctx, err
+}
+
+// createSuggestionPayload is the suggestion create action payload.
+type createSuggestionPayload struct {
+	// The ID of the show
+	ShowID *string `form:"ShowID,omitempty" json:"ShowID,omitempty" xml:"ShowID,omitempty"`
+	// Identity of suggester
+	Suggester *string `form:"Suggester,omitempty" json:"Suggester,omitempty" xml:"Suggester,omitempty"`
+	// The suggested title
+	Title *string `form:"Title,omitempty" json:"Title,omitempty" xml:"Title,omitempty"`
+}
+
+// Validate runs the validation rules defined in the design.
+func (payload *createSuggestionPayload) Validate() (err error) {
+	if payload.ShowID == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "ShowID"))
+	}
+	if payload.Suggester == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "Suggester"))
+	}
+	if payload.Title == nil {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "Title"))
+	}
+	return
+}
+
+// Publicize creates CreateSuggestionPayload from createSuggestionPayload
+func (payload *createSuggestionPayload) Publicize() *CreateSuggestionPayload {
+	var pub CreateSuggestionPayload
+	if payload.ShowID != nil {
+		pub.ShowID = *payload.ShowID
+	}
+	if payload.Suggester != nil {
+		pub.Suggester = *payload.Suggester
+	}
+	if payload.Title != nil {
+		pub.Title = *payload.Title
+	}
+	return &pub
+}
+
+// CreateSuggestionPayload is the suggestion create action payload.
+type CreateSuggestionPayload struct {
+	// The ID of the show
+	ShowID string `form:"ShowID" json:"ShowID" xml:"ShowID"`
+	// Identity of suggester
+	Suggester string `form:"Suggester" json:"Suggester" xml:"Suggester"`
+	// The suggested title
+	Title string `form:"Title" json:"Title" xml:"Title"`
+}
+
+// Validate runs the validation rules defined in the design.
+func (payload *CreateSuggestionPayload) Validate() (err error) {
+	if payload.ShowID == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "ShowID"))
+	}
+	if payload.Suggester == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "Suggester"))
+	}
+	if payload.Title == "" {
+		err = goa.MergeErrors(err, goa.MissingAttributeError(`raw`, "Title"))
+	}
+	return
+}
+
+// NoContent sends a HTTP response with status code 204.
+func (ctx *CreateSuggestionContext) NoContent() error {
+	ctx.ResponseData.WriteHeader(204)
+	return nil
+}
+
+// ListSuggestionContext provides the suggestion list action context.
+type ListSuggestionContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	ShowID string
+}
+
+// NewListSuggestionContext parses the incoming request URL and body, performs validations and creates the
+// context used by the suggestion controller list action.
+func NewListSuggestionContext(ctx context.Context, r *http.Request, service *goa.Service) (*ListSuggestionContext, error) {
+	var err error
+	resp := goa.ContextResponse(ctx)
+	resp.Service = service
+	req := goa.ContextRequest(ctx)
+	req.Request = r
+	rctx := ListSuggestionContext{Context: ctx, ResponseData: resp, RequestData: req}
+	paramShowID := req.Params["showId"]
+	if len(paramShowID) > 0 {
+		rawShowID := paramShowID[0]
+		rctx.ShowID = rawShowID
+	}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *ListSuggestionContext) OK(r *Suggestions) error {
+	if ctx.ResponseData.Header().Get("Content-Type") == "" {
+		ctx.ResponseData.Header().Set("Content-Type", "vnd.application.io/suggestions")
+	}
+	return ctx.ResponseData.Service.Send(ctx.Context, 200, r)
+}
+
+// NotFound sends a HTTP response with status code 404.
+func (ctx *ListSuggestionContext) NotFound() error {
+	ctx.ResponseData.WriteHeader(404)
 	return nil
 }

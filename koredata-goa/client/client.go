@@ -4,15 +4,9 @@
 //
 // Command:
 // $ goagen
-<<<<<<< HEAD
 // --design=github.com/hegemone/kore-poc/koredata-goa/design
 // --out=$(GOPATH)/src/github.com/hegemone/kore-poc/koredata-goa
 // --version=v1.3.1
-=======
-// --design=github.com/thefirstofthe300/kore-poc/koredata-goa/design
-// --out=$(GOPATH)/src/github.com/thefirstofthe300/kore-poc/koredata-goa
-// --version=v1.3.0
->>>>>>> upstream/master
 
 package client
 
@@ -24,8 +18,8 @@ import (
 // Client is the koredata service client.
 type Client struct {
 	*goaclient.Client
-	JWTSigner       goaclient.Signer
 	BasicAuthSigner goaclient.Signer
+	JWTSigner       goaclient.Signer
 	Encoder         *goa.HTTPEncoder
 	Decoder         *goa.HTTPDecoder
 }
@@ -53,12 +47,12 @@ func New(c goaclient.Doer) *Client {
 	return client
 }
 
-// SetJWTSigner sets the request signer for the jwt security scheme.
-func (c *Client) SetJWTSigner(signer goaclient.Signer) {
-	c.JWTSigner = signer
-}
-
 // SetBasicAuthSigner sets the request signer for the BasicAuth security scheme.
 func (c *Client) SetBasicAuthSigner(signer goaclient.Signer) {
 	c.BasicAuthSigner = signer
+}
+
+// SetJWTSigner sets the request signer for the jwt security scheme.
+func (c *Client) SetJWTSigner(signer goaclient.Signer) {
+	c.JWTSigner = signer
 }
