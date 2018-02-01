@@ -1,0 +1,19 @@
+<div class="page-header">
+  <h1>Quote#Show</h1>
+</div>
+
+<ul class="list-unstyled list-inline">
+  <li><a href="<%= quotesPath() %>" class="btn btn-info">Back to all Quotes</a></li>
+  <li><a href="<%= editQuotePath({ quote_id: quote.ID })%>" class="btn btn-warning">Edit</a></li>
+  <li><a href="<%= quotePath({ quote_id: quote.ID })%>" data-method="DELETE" data-confirm="Are you sure?" class="btn btn-danger">Destroy</a>
+</ul>
+
+<p>
+  <strong>Name</strong>: <%= quote.Name %>
+</p>
+<p>
+  <strong>Quote</strong>: <%= quote.Quote %>
+</p>
+<p>
+  <strong>Quotes</strong>: <%= quote.Quotes %>
+</p>

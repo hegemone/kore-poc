@@ -1,0 +1,6 @@
+- id: "quote.created.success"
+  translation: "Quote was successfully created."
+- id: "quote.updated.success"
+  translation: "Quote was successfully updated."
+- id: "quote.destroyed.success"
+  translation: "Quote was successfully destroyed."

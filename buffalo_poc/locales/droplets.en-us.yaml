@@ -1,0 +1,6 @@
+- id: "droplet.created.success"
+  translation: "Droplet was successfully created."
+- id: "droplet.updated.success"
+  translation: "Droplet was successfully updated."
+- id: "droplet.destroyed.success"
+  translation: "Droplet was successfully destroyed."
