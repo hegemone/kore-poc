@@ -1,0 +1,6 @@
+create_table("droplets", func(t) {
+	t.Column("id", "uuid", {"primary": true})
+	t.Column("droplet", "string", {})
+	t.Column("droplets", "varchar[]", {})
+	t.Column("doToken", "string", {})
+})

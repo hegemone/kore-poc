@@ -1,0 +1,6 @@
+- id: "show.created.success"
+  translation: "Show was successfully created."
+- id: "show.updated.success"
+  translation: "Show was successfully updated."
+- id: "show.destroyed.success"
+  translation: "Show was successfully destroyed."

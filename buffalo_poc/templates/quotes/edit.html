@@ -1,0 +1,8 @@
+<div class="page-header">
+  <h1>Edit Quote</h1>
+</div>
+
+<%= form_for(quote, {action: quotePath({ quote_id: quote.ID }), method: "PUT"}) { %>
+  <%= partial("quotes/form.html") %>
+  <a href="<%= quotePath({ quote_id: quote.ID }) %>" class="btn btn-warning" data-confirm="Are you sure?">Cancel</a>
+<% } %>

@@ -1,0 +1,8 @@
+<div class="page-header">
+  <h1>New Droplet</h1>
+</div>
+
+<%= form_for(droplet, {action: dropletsPath(), method: "POST"}) { %>
+  <%= partial("droplets/form.html") %>
+  <a href="<%= dropletsPath() %>" class="btn btn-warning" data-confirm="Are you sure?">Cancel</a>
+<% } %>

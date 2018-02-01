@@ -1,0 +1,35 @@
+<div class="page-header">
+  <h1>Droplets</h1>
+</div>
+<ul class="list-unstyled list-inline">
+  <li><a href="<%= newDropletsPath() %>" class="btn btn-primary">Create New Droplet</a></li>
+</ul>
+
+<table class="table table-striped">
+  <thead>
+  <th>Droplet</th>
+    <th>Droplets</th>
+    <th>DoToken</th>
+    <th>&nbsp;</th>
+  </thead>
+  <tbody>
+    <%= for (droplet) in droplets { %>
+      <tr>
+      <td><%= droplet.Droplet %></td>
+        <td><%= droplet.Droplets %></td>
+        <td><%= droplet.DoToken %></td>
+        <td>
+          <div class="pull-right">
+            <a href="<%= dropletPath({ droplet_id: droplet.ID }) %>" class="btn btn-info">View</a>
+            <a href="<%= editDropletPath({ droplet_id: droplet.ID }) %>" class="btn btn-warning">Edit</a>
+            <a href="<%= dropletPath({ droplet_id: droplet.ID }) %>" data-method="DELETE" data-confirm="Are you sure?" class="btn btn-danger">Destroy</a>
+          </div>
+        </td>
+      </tr>
+    <% } %>
+  </tbody>
+</table>
+
+<div class="text-center">
+  <%= paginator(pagination) %>
+</div>

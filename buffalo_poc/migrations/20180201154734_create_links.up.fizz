@@ -1,0 +1,4 @@
+create_table("links", func(t) {
+	t.Column("id", "uuid", {"primary": true})
+	t.Column("link", "string", {})
+})

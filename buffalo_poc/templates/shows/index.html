@@ -1,0 +1,35 @@
+<div class="page-header">
+  <h1>Shows</h1>
+</div>
+<ul class="list-unstyled list-inline">
+  <li><a href="<%= newShowsPath() %>" class="btn btn-primary">Create New Show</a></li>
+</ul>
+
+<table class="table table-striped">
+  <thead>
+  <th>Name</th>
+    <th>Nick</th>
+    <th>Suggestion</th>
+    <th>&nbsp;</th>
+  </thead>
+  <tbody>
+    <%= for (show) in shows { %>
+      <tr>
+      <td><%= show.Name %></td>
+        <td><%= show.Nick %></td>
+        <td><%= show.Suggestion %></td>
+        <td>
+          <div class="pull-right">
+            <a href="<%= showPath({ show_id: show.ID }) %>" class="btn btn-info">View</a>
+            <a href="<%= editShowPath({ show_id: show.ID }) %>" class="btn btn-warning">Edit</a>
+            <a href="<%= showPath({ show_id: show.ID }) %>" data-method="DELETE" data-confirm="Are you sure?" class="btn btn-danger">Destroy</a>
+          </div>
+        </td>
+      </tr>
+    <% } %>
+  </tbody>
+</table>
+
+<div class="text-center">
+  <%= paginator(pagination) %>
+</div>
