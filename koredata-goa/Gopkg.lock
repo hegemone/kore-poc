@@ -28,7 +28,6 @@
 [[projects]]
   branch = "master"
   name = "github.com/goadesign/goa"
-<<<<<<< HEAD
   packages = [
     ".",
     "client",
@@ -40,9 +39,6 @@
     "middleware/security/jwt",
     "uuid"
   ]
-=======
-  packages = [".","client","design","design/apidsl","dslengine","goatest","middleware","middleware/security/jwt","uuid"]
->>>>>>> upstream/master
   revision = "4d161c69bc5b667a0b64ceeca528dc2d114936d5"
 
 [[projects]]
@@ -58,6 +54,12 @@
   revision = "0a025b7e63adc15a622f29b0b2c4c3848243bbf6"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/hegemone/kore-poc"
+  packages = ["koredata-goa/client"]
+  revision = "867778a17a0c6005e7533e5f30d2db38ff94011c"
+
+[[projects]]
   name = "github.com/inconshreveable/mousetrap"
   packages = ["."]
   revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
@@ -65,14 +67,10 @@
 
 [[projects]]
   name = "github.com/jinzhu/gorm"
-<<<<<<< HEAD
   packages = [
     ".",
     "dialects/sqlite"
   ]
-=======
-  packages = [".","dialects/sqlite"]
->>>>>>> upstream/master
   revision = "5174cc5c242a728b435ea2be8a2f7f998e15429b"
   version = "v1.0"
 
@@ -114,19 +112,15 @@
 
 [[projects]]
   branch = "master"
-<<<<<<< HEAD
   name = "github.com/thefirstofthe300/kore-poc"
   packages = [
-    "koredata-goa/app",
     "koredata-goa/client",
     "koredata-goa/tool/cli"
   ]
-  revision = "2a74dc2b184c5b424548c8b6649840aa37d660d1"
+  revision = "79f2bee5b676db0979d4510adc0e3a6417230d35"
 
 [[projects]]
   branch = "master"
-=======
->>>>>>> upstream/master
   name = "github.com/zach-klippenstein/goregen"
   packages = ["."]
   revision = "795b5e3961ea1912fde60af417ad85e86acc0d6a"
@@ -134,23 +128,15 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
-<<<<<<< HEAD
   packages = [
     "context",
     "websocket"
   ]
-=======
-  packages = ["context","websocket"]
->>>>>>> upstream/master
   revision = "a337091b0525af65de94df2eb7e98bd9962dcbe2"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-<<<<<<< HEAD
-  inputs-digest = "4ca62caf3888d1a5c49a95618429ed53a261fe3419f47182f34bd48d5c0d214f"
-=======
-  inputs-digest = "ab92f1c9af083db36b30bbbe37a404d502036ec8d20153b20940fdb841f21e1e"
->>>>>>> upstream/master
+  inputs-digest = "2dcf58113bea6f136b0ebca93327c93d7ab4310f592ed6d7c5fa195f6c16bf34"
   solver-name = "gps-cdcl"
   solver-version = 1
